@@ -1,0 +1,203 @@
+FinTrack Pro Master Roadmap
+Phase 1 — MVP (Current Priority)
+Day 4
+
+✅ Budget Management
+
+Set Budget
+Update Budget
+Remaining Budget
+Budget Progress Bar
+Budget Dashboard Card
+Day 5
+
+✅ Search, Filter & Sort Expenses
+
+Search by Title
+Filter by Category
+Sort by Amount
+Sort by Date
+Day 6
+
+✅ Dashboard Analytics
+
+Expense Summary
+Budget Summary
+Monthly Analytics
+Day 7
+
+✅ Charts
+
+Pie Chart
+Bar Chart
+Category Analytics
+Day 8
+
+✅ PDF Export
+
+Monthly Report PDF
+Expense Report PDF
+Day 9
+
+✅ Excel Export
+
+Export Expenses
+Export Reports
+Day 10
+
+✅ Profile Settings
+
+Update Name
+Update Email
+Change Password
+Day 11
+
+✅ Dark Mode
+
+Theme Toggle
+Persist Theme
+Phase 2 — Advanced Features
+Day 12
+
+✅ Forgot Password
+
+Day 13
+
+✅ Reset Password
+
+Day 14
+
+✅ Cloudinary Setup
+
+Day 15
+
+✅ Receipt Upload
+
+Upload Bills
+Preview Receipts
+Day 16
+
+✅ Multi Currency
+
+INR
+USD
+EUR
+GBP
+Day 17
+
+✅ Recurring Expenses
+
+Using:
+
+Node Cron
+Daily
+Weekly
+Monthly
+Yearly
+Day 18
+
+✅ Notifications
+
+Using:
+
+Socket.io
+Budget Alerts
+Expense Alerts
+Phase 3 — SaaS Features
+Day 19
+
+✅ Role Based Access
+
+Admin
+User
+Day 20
+
+✅ Admin Dashboard
+
+User Management
+Analytics
+Activity Monitoring
+Day 21
+
+✅ Team Management
+
+Create Team
+Invite Members
+Day 22
+
+✅ Expense Split
+
+Equal Split
+Percentage Split
+Custom Split
+Day 23
+
+✅ Group Expenses
+
+Day 24
+
+✅ Settlement Tracking
+
+Day 25
+
+✅ Expense Approval Workflow
+
+Phase 4 — Production Features
+Day 26
+
+✅ Reports
+
+Daily
+Weekly
+Monthly
+Yearly
+Day 27
+
+✅ Responsive Mobile UI
+
+Day 28
+
+✅ Performance Optimization
+
+Day 29
+
+✅ Deployment
+
+Frontend → Vercel
+Backend → Render
+Database → MongoDB Atlas
+Day 30
+
+✅ Final Testing
+✅ Portfolio README
+✅ Resume Project Documentation
+
+Final Result
+
+By Day 30 you will have:
+
+Authentication
+Expense CRUD
+Budget Management
+Analytics
+Charts
+PDF Export
+Excel Export
+Cloudinary Upload
+Notifications
+Recurring Expenses
+Multi Currency
+Admin Panel
+Team Expenses
+Expense Splitting
+Role Based Access
+Dark Mode
+Reports
+Deployment
+
+This would be:
+
+Resume Project       : 10/10
+Portfolio Project    : 10/10
+Internship Project   : 10/10
+College Project      : 10/10

@@ -8,6 +8,16 @@ import {
   updateExpense,
 } from "../../services/expenseService";
 
+import {
+  createBudget,
+  getBudget,
+} from "../../services/budgetService";
+
+import {
+  FaEdit,
+  FaTrash
+} from "react-icons/fa";
+
 function DashboardPage() {
   const [expenses, setExpenses] = useState([]);
 
@@ -16,10 +26,31 @@ function DashboardPage() {
   const [category, setCategory] = useState("");
   const [editingId, setEditingId] = useState(null);
 
+  const [budget, setBudget] =
+    useState(null);
+
+  const [budgetAmount, setBudgetAmount] =
+    useState("");
+
   const totalAmount = expenses.reduce(
     (total, expense) => total + expense.amount,
     0
   );
+
+  const remainingBudget =
+    budget
+      ? budget.amount - totalAmount
+      : 0;
+
+  const budgetPercentage =
+    budget && budget.amount > 0
+      ? Math.min(
+        (totalAmount /
+          budget.amount) *
+        100,
+        100
+      )
+      : 0;
 
 
 
@@ -44,6 +75,37 @@ function DashboardPage() {
       console.log(error);
 
       alert("Delete Failed");
+    }
+  };
+
+  const handleCreateBudget = async () => {
+    try {
+
+      const user = JSON.parse(
+        localStorage.getItem("user")
+      );
+
+      const data =
+        await createBudget({
+          user: user.id,
+          amount: Number(
+            budgetAmount
+          ),
+        });
+
+      setBudget(data);
+
+      setBudgetAmount("");
+
+      alert("Budget Created");
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert(
+        "Failed to Create Budget"
+      );
     }
   };
 
@@ -85,6 +147,7 @@ function DashboardPage() {
 
       setExpenses(data);
 
+
       setTitle("");
 
       setAmount("");
@@ -115,6 +178,16 @@ function DashboardPage() {
         const data = await getExpenses();
 
         setExpenses(data);
+
+        const user = JSON.parse(
+          localStorage.getItem("user")
+        );
+
+        const budgetData =
+          await getBudget(user.id);
+
+        setBudget(budgetData);
+
       } catch (error) {
         console.log(error);
       }
@@ -232,7 +305,7 @@ function DashboardPage() {
                 </p>
 
                 <h2 className="text-3xl font-bold mt-2">
-                  100%
+                  {budgetPercentage.toFixed(0)}%
                 </h2>
               </div>
 
@@ -357,16 +430,14 @@ function DashboardPage() {
                             className="
     mt-2
     mr-2
-    px-3
-    py-1
+    p-2
     bg-blue-500
     text-white
     rounded-lg
-    text-sm
     hover:bg-blue-600
   "
                           >
-                            Edit
+                            <FaEdit />
                           </button>
 
                           <button
@@ -374,17 +445,15 @@ function DashboardPage() {
                               handleDeleteExpense(expense._id)
                             }
                             className="
-      mt-2
-      px-3
-      py-1
-      bg-red-500
-      text-white
-      rounded-lg
-      text-sm
-      hover:bg-red-600
-    "
+    mt-2
+    p-2
+    bg-red-500
+    text-white
+    rounded-lg
+    hover:bg-red-600
+  "
                           >
-                            Delete
+                            <FaTrash />
                           </button>
                         </td>
                       </tr>
@@ -398,6 +467,59 @@ function DashboardPage() {
 
           {/* RIGHT SIDE */}
           <div>
+
+            <div
+              className="
+    mb-6
+    bg-gradient-to-r
+    from-emerald-500
+    to-green-600
+    text-white
+    rounded-3xl
+    p-6
+  "
+            >
+              <h3 className="text-xl font-bold mb-4">
+                Budget Summary
+              </h3>
+
+              <p>
+                Budget:
+                ₹ {budget?.amount || 0}
+              </p>
+
+              <p className="mt-2">
+                Spent:
+                ₹ {totalAmount}
+              </p>
+
+              <p className="mt-2">
+                Remaining:
+                ₹ {remainingBudget}
+              </p>
+
+              <div
+                className="
+      mt-4
+      h-3
+      bg-white/30
+      rounded-full
+      overflow-hidden
+    "
+              >
+                <div
+                  className="h-full bg-white"
+                  style={{
+                    width: `${budgetPercentage}%`,
+                  }}
+                />
+              </div>
+
+              <p className="mt-2 text-sm">
+                {budgetPercentage.toFixed(0)}%
+                Used
+              </p>
+            </div>
 
             <div
               className="
@@ -418,6 +540,39 @@ function DashboardPage() {
               <p className="text-slate-500 mb-6">
                 Record a new transaction
               </p>
+
+              <input
+                type="number"
+                placeholder="Set Monthly Budget"
+                value={budgetAmount}
+                onChange={(e) =>
+                  setBudgetAmount(
+                    e.target.value
+                  )
+                }
+                className="
+    w-full
+    p-3
+    border
+    rounded-xl
+    mb-3
+  "
+              />
+
+              <button
+                onClick={handleCreateBudget}
+                className="
+    w-full
+    py-3
+    mb-4
+    rounded-xl
+    bg-emerald-600
+    text-white
+    font-semibold
+  "
+              >
+                Save Budget
+              </button>
 
               <div className="space-y-4">
 
@@ -479,7 +634,9 @@ function DashboardPage() {
                   font-semibold
                 "
                 >
-                  Add Expense
+                  {editingId
+                    ? "Update Expense"
+                    : "Add Expense"}
                 </button>
 
               </div>
