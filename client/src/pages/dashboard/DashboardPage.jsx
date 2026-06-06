@@ -13,10 +13,28 @@ import {
   getBudget,
 } from "../../services/budgetService";
 
+import { FaEdit, FaTrash } from "react-icons/fa";
+
 import {
-  FaEdit,
-  FaTrash
-} from "react-icons/fa";
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+} from "recharts";
+
+const COLORS = [
+  "#2563eb",
+  "#16a34a",
+  "#dc2626",
+  "#ca8a04",
+  "#7c3aed",
+  "#0891b2",
+];
 
 function DashboardPage() {
   const [expenses, setExpenses] = useState([]);
@@ -35,16 +53,11 @@ function DashboardPage() {
     0
   );
 
-  const remainingBudget = budget
-    ? budget.amount - totalAmount
-    : 0;
+  const remainingBudget = budget ? budget.amount - totalAmount : 0;
 
   const budgetPercentage =
     budget && budget.amount > 0
-      ? Math.min(
-          (totalAmount / budget.amount) * 100,
-          100
-        )
+      ? Math.min((totalAmount / budget.amount) * 100, 100)
       : 0;
 
   const averageExpense =
@@ -54,12 +67,12 @@ function DashboardPage() {
 
   const highestExpense =
     expenses.length > 0
-      ? Math.max(...expenses.map(expense => expense.amount))
+      ? Math.max(...expenses.map((expense) => expense.amount))
       : 0;
 
   const lowestExpense =
     expenses.length > 0
-      ? Math.min(...expenses.map(expense => expense.amount))
+      ? Math.min(...expenses.map((expense) => expense.amount))
       : 0;
 
   const monthlySpending = totalAmount;
@@ -74,58 +87,38 @@ function DashboardPage() {
       : "Budget Healthy";
 
   const categories = [
-    ...new Set(
-      expenses.map((expense) => expense.category)
-    ),
+    ...new Set(expenses.map((expense) => expense.category)),
   ];
+
+  const categoryData = categories.map((category) => ({
+    name: category,
+    value: expenses
+      .filter((expense) => expense.category === category)
+      .reduce((total, expense) => total + expense.amount, 0),
+  }));
 
   const highestCategory =
     categories.length > 0
-      ? categories.reduce(
-          (best, current) => {
-            const bestTotal =
-              expenses
-                .filter(
-                  expense =>
-                    expense.category === best
-                )
-                .reduce(
-                  (sum, expense) =>
-                    sum + expense.amount,
-                  0
-                );
+      ? categories.reduce((best, current) => {
+          const bestTotal = expenses
+            .filter((expense) => expense.category === best)
+            .reduce((sum, expense) => sum + expense.amount, 0);
 
-            const currentTotal =
-              expenses
-                .filter(
-                  expense =>
-                    expense.category === current
-                )
-                .reduce(
-                  (sum, expense) =>
-                    sum + expense.amount,
-                  0
-                );
+          const currentTotal = expenses
+            .filter((expense) => expense.category === current)
+            .reduce((sum, expense) => sum + expense.amount, 0);
 
-            return currentTotal > bestTotal
-              ? current
-              : best;
-          }
-        )
+          return currentTotal > bestTotal ? current : best;
+        })
       : "N/A";
 
   const averageTransaction =
     expenses.length > 0
-      ? (
-          totalAmount /
-          expenses.length
-        ).toFixed(2)
+      ? (totalAmount / expenses.length).toFixed(2)
       : 0;
 
   const recommendation =
-    budgetPercentage >= 80
-      ? "Reduce Spending"
-      : "Keep Saving";
+    budgetPercentage >= 80 ? "Reduce Spending" : "Keep Saving";
 
   const handleDeleteExpense = async (id) => {
     try {
@@ -145,9 +138,7 @@ function DashboardPage() {
 
   const handleCreateBudget = async () => {
     try {
-      const user = JSON.parse(
-        localStorage.getItem("user")
-      );
+      const user = JSON.parse(localStorage.getItem("user"));
 
       const data = await createBudget({
         user: user.id,
@@ -166,19 +157,14 @@ function DashboardPage() {
 
   const handleAddExpense = async () => {
     try {
-      const user = JSON.parse(
-        localStorage.getItem("user")
-      );
+      const user = JSON.parse(localStorage.getItem("user"));
 
       if (editingId) {
-        await updateExpense(
-          editingId,
-          {
-            title,
-            amount: Number(amount),
-            category,
-          }
-        );
+        await updateExpense(editingId, {
+          title,
+          amount: Number(amount),
+          category,
+        });
 
         alert("Expense Updated");
         setEditingId(null);
@@ -199,7 +185,6 @@ function DashboardPage() {
       setTitle("");
       setAmount("");
       setCategory("");
-
     } catch (error) {
       console.log(error);
       alert("Operation Failed");
@@ -219,13 +204,10 @@ function DashboardPage() {
         const data = await getExpenses();
         setExpenses(data);
 
-        const user = JSON.parse(
-          localStorage.getItem("user")
-        );
+        const user = JSON.parse(localStorage.getItem("user"));
 
         const budgetData = await getBudget(user.id);
         setBudget(budgetData);
-
       } catch (error) {
         console.log(error);
       }
@@ -237,10 +219,8 @@ function DashboardPage() {
   return (
     <DashboardLayout>
       <div className="p-8">
-
         {/* Hero Section */}
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
-
           <div
             className="
               lg:col-span-2
@@ -254,13 +234,11 @@ function DashboardPage() {
               shadow-xl
             "
           >
-            <h1 className="text-4xl font-bold mb-3">
-              Welcome Back 👋
-            </h1>
+            <h1 className="text-4xl font-bold mb-3">Welcome Back 👋</h1>
 
             <p className="text-lg text-indigo-100">
-              Track expenses, monitor spending and achieve
-              your financial goals.
+              Track expenses, monitor spending and achieve your financial
+              goals.
             </p>
           </div>
 
@@ -272,30 +250,22 @@ function DashboardPage() {
               shadow-lg
             "
           >
-            <p className="text-slate-500">
-              Total Spending
-            </p>
+            <p className="text-slate-500">Total Spending</p>
 
             <h2 className="text-4xl font-bold mt-3 text-emerald-600">
               ₹ {totalAmount}
             </h2>
 
-            <p className="mt-2 text-slate-400">
-              This Month
-            </p>
+            <p className="mt-2 text-slate-400">This Month</p>
           </div>
-
         </div>
 
         {/* Main Layout */}
         <div className="grid lg:grid-cols-3 gap-6">
-
           {/* LEFT SIDE */}
           <div className="lg:col-span-2">
-
             {/* Stats */}
             <div className="grid md:grid-cols-3 gap-4 mb-6">
-
               <div
                 className="
                   bg-white
@@ -304,9 +274,7 @@ function DashboardPage() {
                   shadow-md
                 "
               >
-                <p className="text-slate-500">
-                  Expenses
-                </p>
+                <p className="text-slate-500">Expenses</p>
 
                 <h2 className="text-3xl font-bold mt-2">
                   {expenses.length}
@@ -321,9 +289,7 @@ function DashboardPage() {
                   shadow-md
                 "
               >
-                <p className="text-slate-500">
-                  Categories
-                </p>
+                <p className="text-slate-500">Categories</p>
 
                 <h2 className="text-3xl font-bold mt-2">
                   {categories.length}
@@ -338,66 +304,61 @@ function DashboardPage() {
                   shadow-md
                 "
               >
-                <p className="text-slate-500">
-                  Budget Used
-                </p>
+                <p className="text-slate-500">Budget Used</p>
 
                 <h2 className="text-3xl font-bold mt-2">
                   {budgetPercentage.toFixed(0)}%
                 </h2>
-                
+
                 <p className="text-sm text-slate-500 mt-2">
                   {budgetStatus}
                 </p>
               </div>
-
             </div>
 
             {/* Additional Analytics Cards */}
             <div className="grid md:grid-cols-3 gap-4 mb-6">
-
-              <div className="
-                bg-white
-                p-5
-                rounded-2xl
-                shadow-md
-              ">
-                <p className="text-slate-500">
-                  Average Expense
-                </p>
+              <div
+                className="
+                  bg-white
+                  p-5
+                  rounded-2xl
+                  shadow-md
+                "
+              >
+                <p className="text-slate-500">Average Expense</p>
                 <h2 className="text-3xl font-bold mt-2">
                   ₹ {averageExpense}
                 </h2>
               </div>
 
-              <div className="
-                bg-white
-                p-5
-                rounded-2xl
-                shadow-md
-              ">
-                <p className="text-slate-500">
-                  Highest Expense
-                </p>
+              <div
+                className="
+                  bg-white
+                  p-5
+                  rounded-2xl
+                  shadow-md
+                "
+              >
+                <p className="text-slate-500">Highest Expense</p>
                 <h2 className="text-3xl font-bold mt-2 text-red-500">
                   ₹ {highestExpense}
                 </h2>
               </div>
 
-              <div className="
-                bg-white
-                p-5
-                rounded-2xl
-                shadow-md
-              ">
-                <p className="text-slate-500">
-                  Lowest Expense
-                </p>
+              <div
+                className="
+                  bg-white
+                  p-5
+                  rounded-2xl
+                  shadow-md
+                "
+              >
+                <p className="text-slate-500">Lowest Expense</p>
                 <h2 className="text-3xl font-bold mt-2 text-emerald-600">
                   ₹ {lowestExpense}
                 </h2>
               </div>
-
             </div>
 
             {/* Monthly Analytics */}
@@ -422,9 +383,7 @@ function DashboardPage() {
 
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
-                  <p className="text-slate-500">
-                    Monthly Spending
-                  </p>
+                  <p className="text-slate-500">Monthly Spending</p>
 
                   <h3 className="text-3xl font-bold mt-2">
                     ₹ {monthlySpending}
@@ -432,9 +391,7 @@ function DashboardPage() {
                 </div>
 
                 <div>
-                  <p className="text-slate-500">
-                    Daily Average
-                  </p>
+                  <p className="text-slate-500">Daily Average</p>
 
                   <h3 className="text-3xl font-bold mt-2">
                     ₹ {dailyAverage}
@@ -442,9 +399,7 @@ function DashboardPage() {
                 </div>
 
                 <div>
-                  <p className="text-slate-500">
-                    Budget Status
-                  </p>
+                  <p className="text-slate-500">Budget Status</p>
 
                   <h3
                     className="
@@ -476,9 +431,7 @@ function DashboardPage() {
 
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
-                  <p className="text-slate-500">
-                    Top Category
-                  </p>
+                  <p className="text-slate-500">Top Category</p>
 
                   <h3 className="text-2xl font-bold mt-2">
                     {highestCategory}
@@ -486,9 +439,7 @@ function DashboardPage() {
                 </div>
 
                 <div>
-                  <p className="text-slate-500">
-                    Avg Transaction
-                  </p>
+                  <p className="text-slate-500">Avg Transaction</p>
 
                   <h3 className="text-2xl font-bold mt-2">
                     ₹ {averageTransaction}
@@ -496,9 +447,7 @@ function DashboardPage() {
                 </div>
 
                 <div>
-                  <p className="text-slate-500">
-                    Recommendation
-                  </p>
+                  <p className="text-slate-500">Recommendation</p>
 
                   <h3
                     className="
@@ -509,6 +458,152 @@ function DashboardPage() {
                     "
                   >
                     {recommendation}
+                  </h3>
+                </div>
+              </div>
+            </div>
+
+            {/* Analytics Header */}
+            <div className="mb-6">
+              <h2 className="text-3xl font-bold">
+                Expense Analytics
+              </h2>
+              <p className="text-slate-500 mt-2">
+                Category-wise spending insights
+              </p>
+            </div>
+
+            {/* Charts Section */}
+            <div className="grid lg:grid-cols-2 gap-6 mb-8">
+              {/* Category Analytics Pie Chart */}
+              <div
+                className="
+                  bg-white
+                  rounded-3xl
+                  shadow-lg
+                  p-6
+                "
+              >
+                <h2
+                  className="
+                    text-2xl
+                    font-bold
+                    mb-6
+                  "
+                >
+                  Category Analytics
+                </h2>
+
+                <div
+                  style={{
+                    width: "100%",
+                    height: 300,
+                  }}
+                >
+                  <ResponsiveContainer>
+                    <PieChart>
+                      <Pie
+                        data={categoryData}
+                        dataKey="value"
+                        nameKey="name"
+                        outerRadius={100}
+                      >
+                        {categoryData.map((entry, index) => (
+                          <Cell
+                            key={index}
+                            fill={COLORS[index % COLORS.length]}
+                          />
+                        ))}
+                      </Pie>
+
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* Spending Comparison Bar Chart */}
+              <div
+                className="
+                  bg-white
+                  rounded-3xl
+                  shadow-lg
+                  p-6
+                "
+              >
+                <h2
+                  className="
+                    text-2xl
+                    font-bold
+                    mb-6
+                  "
+                >
+                  Spending Comparison
+                </h2>
+
+                <div
+                  style={{
+                    width: "100%",
+                    height: 300,
+                  }}
+                >
+                  <ResponsiveContainer>
+                    <BarChart data={categoryData}>
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar
+                        dataKey="value"
+                        fill="#2563eb"
+                        radius={[8, 8, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+
+            {/* Analytics Summary Card */}
+            <div
+              className="
+                bg-gradient-to-r
+                from-indigo-600
+                to-blue-600
+                rounded-3xl
+                p-6
+                text-white
+                mb-6
+              "
+            >
+              <h2 className="text-2xl font-bold">
+                Analytics Summary
+              </h2>
+
+              <div className="grid md:grid-cols-3 gap-4 mt-6">
+                <div>
+                  <p className="opacity-80">
+                    Categories
+                  </p>
+                  <h3 className="text-3xl font-bold">
+                    {categories.length}
+                  </h3>
+                </div>
+
+                <div>
+                  <p className="opacity-80">
+                    Expenses
+                  </p>
+                  <h3 className="text-3xl font-bold">
+                    {expenses.length}
+                  </h3>
+                </div>
+
+                <div>
+                  <p className="opacity-80">
+                    Budget Used
+                  </p>
+                  <h3 className="text-3xl font-bold">
+                    {budgetPercentage.toFixed(0)}%
                   </h3>
                 </div>
               </div>
@@ -627,9 +722,7 @@ function DashboardPage() {
                           </div>
 
                           <button
-                            onClick={() =>
-                              handleEditExpense(expense)
-                            }
+                            onClick={() => handleEditExpense(expense)}
                             className="
                               mt-2
                               mr-2
@@ -665,12 +758,10 @@ function DashboardPage() {
                 </table>
               )}
             </div>
-
           </div>
 
           {/* RIGHT SIDE */}
           <div>
-
             <div
               className="
                 mb-6
@@ -686,17 +777,11 @@ function DashboardPage() {
                 Budget Summary
               </h3>
 
-              <p>
-                Budget: ₹ {budget?.amount || 0}
-              </p>
+              <p>Budget: ₹ {budget?.amount || 0}</p>
 
-              <p className="mt-2">
-                Spent: ₹ {totalAmount}
-              </p>
+              <p className="mt-2">Spent: ₹ {totalAmount}</p>
 
-              <p className="mt-2">
-                Remaining: ₹ {remainingBudget}
-              </p>
+              <p className="mt-2">Remaining: ₹ {remainingBudget}</p>
 
               <div
                 className="
@@ -731,9 +816,7 @@ function DashboardPage() {
               "
             >
               <h2 className="text-2xl font-bold mb-2">
-                {editingId
-                  ? "Update Expense"
-                  : "Add Expense"}
+                {editingId ? "Update Expense" : "Add Expense"}
               </h2>
 
               <p className="text-slate-500 mb-6">
@@ -744,9 +827,7 @@ function DashboardPage() {
                 type="number"
                 placeholder="Set Monthly Budget"
                 value={budgetAmount}
-                onChange={(e) =>
-                  setBudgetAmount(e.target.value)
-                }
+                onChange={(e) => setBudgetAmount(e.target.value)}
                 className="
                   w-full
                   p-3
@@ -772,14 +853,11 @@ function DashboardPage() {
               </button>
 
               <div className="space-y-4">
-
                 <input
                   type="text"
                   placeholder="Expense Title"
                   value={title}
-                  onChange={(e) =>
-                    setTitle(e.target.value)
-                  }
+                  onChange={(e) => setTitle(e.target.value)}
                   className="
                     w-full
                     p-3
@@ -792,9 +870,7 @@ function DashboardPage() {
                   type="number"
                   placeholder="Amount"
                   value={amount}
-                  onChange={(e) =>
-                    setAmount(e.target.value)
-                  }
+                  onChange={(e) => setAmount(e.target.value)}
                   className="
                     w-full
                     p-3
@@ -807,9 +883,7 @@ function DashboardPage() {
                   type="text"
                   placeholder="Category"
                   value={category}
-                  onChange={(e) =>
-                    setCategory(e.target.value)
-                  }
+                  onChange={(e) => setCategory(e.target.value)}
                   className="
                     w-full
                     p-3
@@ -831,19 +905,12 @@ function DashboardPage() {
                     font-semibold
                   "
                 >
-                  {editingId
-                    ? "Update Expense"
-                    : "Add Expense"}
+                  {editingId ? "Update Expense" : "Add Expense"}
                 </button>
-
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
     </DashboardLayout>
   );
