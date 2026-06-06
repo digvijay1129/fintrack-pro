@@ -21,12 +21,13 @@ function Sidebar() {
     },
     {
       name: "Budget",
-      path: "#",
+      path: "/budget",
       icon: <FaBullseye />,
     },
+
     {
       name: "Reports",
-      path: "#",
+      path: "/reports",
       icon: <FaChartLine />,
     },
     {
