@@ -30,10 +30,10 @@ function Sidebar() {
       icon: <FaChartLine />,
     },
     {
-      name: "Settings",
-      path: "#",
+      name: "Profile",
+      path: "/profile",
       icon: <FaCog />,
-    },
+    }
   ];
 
   return (

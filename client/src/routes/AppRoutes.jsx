@@ -7,6 +7,7 @@ import LoginPage from "../pages/auth/LoginPage";
 import RegisterPage from "../pages/auth/RegisterPage";
 import ProtectedRoute from "./ProtectedRoute";
 import ExpensesPage from "../pages/dashboard/ExpensesPage";
+import ProfilePage from "../pages/dashboard/ProfilePage";
 
 function AppRoutes() {
   return (
@@ -28,6 +29,11 @@ function AppRoutes() {
       <Route
         path="/dashboard"
         element={<DashboardPage />}
+      />
+
+      <Route
+        path="/profile"
+        element={<ProfilePage />}
       />
 
       <Route path="/login" element={<LoginPage />} />
