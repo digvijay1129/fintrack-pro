@@ -1,10 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 
 
+
 import DashboardPage from "../pages/dashboard/DashboardPage";
 import LoginPage from "../pages/auth/LoginPage";
 import RegisterPage from "../pages/auth/RegisterPage";
 import ProtectedRoute from "./ProtectedRoute";
+import ExpensesPage from "../pages/dashboard/ExpensesPage";
 
 function AppRoutes() {
   return (
@@ -16,6 +18,16 @@ function AppRoutes() {
             <DashboardPage />
           </ProtectedRoute>
         }
+      />
+
+      <Route
+        path="/expenses"
+        element={<ExpensesPage />}
+      />
+
+      <Route
+        path="/dashboard"
+        element={<DashboardPage />}
       />
 
       <Route path="/login" element={<LoginPage />} />

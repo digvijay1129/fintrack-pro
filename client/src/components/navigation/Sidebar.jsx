@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   FaHome,
   FaWallet,
@@ -10,23 +11,27 @@ function Sidebar() {
   const menuItems = [
     {
       name: "Dashboard",
+      path: "/dashboard",
       icon: <FaHome />,
-      active: true,
     },
     {
       name: "Expenses",
+      path: "/expenses",
       icon: <FaWallet />,
     },
     {
       name: "Budget",
+      path: "#",
       icon: <FaBullseye />,
     },
     {
       name: "Reports",
+      path: "#",
       icon: <FaChartLine />,
     },
     {
       name: "Settings",
+      path: "#",
       icon: <FaCog />,
     },
   ];
@@ -92,34 +97,29 @@ function Sidebar() {
 
         <div className="space-y-2">
           {menuItems.map((item) => (
-            <div
+            <Link
               key={item.name}
-              className={`
-                flex
-                items-center
-                gap-4
-                px-4
-                py-3
-                rounded-2xl
-                cursor-pointer
-                transition-all
-                duration-300
-
-                ${
-                  item.active
-                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg"
-                    : "hover:bg-slate-800 text-slate-300"
-                }
-              `}
+              to={item.path}
+              className="
+      flex
+      items-center
+      gap-3
+      p-4
+      rounded-2xl
+      hover:bg-slate-800
+      transition-all
+      duration-300
+      font-medium
+    "
             >
               <span className="text-lg">
                 {item.icon}
               </span>
 
-              <span className="font-medium">
+              <span>
                 {item.name}
               </span>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
