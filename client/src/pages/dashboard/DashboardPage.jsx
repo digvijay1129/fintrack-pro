@@ -249,7 +249,6 @@ function DashboardPage() {
   };
 
   const exportExcel = () => {
-    // Step 2: Better Expense Sheet
     const data = expenses.map((expense) => ({
       Expense: expense.title,
       Category: expense.category,
@@ -257,44 +256,16 @@ function DashboardPage() {
       Status: "Completed",
     }));
 
-    // Step 1: Added Analytics Data
     const summary = [
-      {
-        Metric: "Total Expenses",
-        Value: expenses.length,
-      },
-      {
-        Metric: "Total Spending",
-        Value: totalAmount,
-      },
-      {
-        Metric: "Budget",
-        Value: budget?.amount || 0,
-      },
-      {
-        Metric: "Remaining Budget",
-        Value: remainingBudget,
-      },
-      {
-        Metric: "Average Expense",
-        Value: averageExpense,
-      },
-      {
-        Metric: "Highest Expense",
-        Value: highestExpense,
-      },
-      {
-        Metric: "Lowest Expense",
-        Value: lowestExpense,
-      },
-      {
-        Metric: "Budget Used %",
-        Value: budgetPercentage.toFixed(0),
-      },
-      {
-        Metric: "Budget Status",
-        Value: budgetStatus,
-      },
+      { Metric: "Total Expenses", Value: expenses.length },
+      { Metric: "Total Spending", Value: totalAmount },
+      { Metric: "Budget", Value: budget?.amount || 0 },
+      { Metric: "Remaining Budget", Value: remainingBudget },
+      { Metric: "Average Expense", Value: averageExpense },
+      { Metric: "Highest Expense", Value: highestExpense },
+      { Metric: "Lowest Expense", Value: lowestExpense },
+      { Metric: "Budget Used %", Value: budgetPercentage.toFixed(0) },
+      { Metric: "Budget Status", Value: budgetStatus },
     ];
 
     const summarySheet = XLSX.utils.json_to_sheet(summary);
@@ -358,8 +329,7 @@ function DashboardPage() {
             <h1 className="text-4xl font-bold mb-3">Welcome Back 👋</h1>
 
             <p className="text-lg text-indigo-100">
-              Track expenses, monitor spending and achieve your financial
-              goals.
+              Track expenses, monitor spending and achieve your financial goals.
             </p>
 
             <div className="flex flex-wrap gap-4 mt-6">
@@ -399,13 +369,16 @@ function DashboardPage() {
 
           <div
             className="
-              bg-white
               rounded-3xl
               p-6
               shadow-lg
+              bg-white text-slate-900
+              dark:bg-slate-800 dark:text-white
             "
           >
-            <p className="text-slate-500">Total Spending</p>
+            <p className="text-slate-500 dark:text-slate-300">
+              Total Spending
+            </p>
 
             <h2 className="text-4xl font-bold mt-3 text-emerald-600">
               ₹ {totalAmount}
@@ -423,13 +396,16 @@ function DashboardPage() {
             <div className="grid md:grid-cols-3 gap-4 mb-6">
               <div
                 className="
-                  bg-white
                   rounded-2xl
                   p-5
                   shadow-md
+                  bg-white text-slate-900
+                  dark:bg-slate-800 dark:text-white
                 "
               >
-                <p className="text-slate-500">Expenses</p>
+                <p className="text-slate-500 dark:text-slate-300">
+                  Expenses
+                </p>
 
                 <h2 className="text-3xl font-bold mt-2">
                   {expenses.length}
@@ -438,13 +414,16 @@ function DashboardPage() {
 
               <div
                 className="
-                  bg-white
                   rounded-2xl
                   p-5
                   shadow-md
+                  bg-white text-slate-900
+                  dark:bg-slate-800 dark:text-white
                 "
               >
-                <p className="text-slate-500">Categories</p>
+                <p className="text-slate-500 dark:text-slate-300">
+                  Categories
+                </p>
 
                 <h2 className="text-3xl font-bold mt-2">
                   {categories.length}
@@ -453,19 +432,22 @@ function DashboardPage() {
 
               <div
                 className="
-                  bg-white
                   rounded-2xl
                   p-5
                   shadow-md
+                  bg-white text-slate-900
+                  dark:bg-slate-800 dark:text-white
                 "
               >
-                <p className="text-slate-500">Budget Used</p>
+                <p className="text-slate-500 dark:text-slate-300">
+                  Budget Used
+                </p>
 
                 <h2 className="text-3xl font-bold mt-2">
                   {budgetPercentage.toFixed(0)}%
                 </h2>
 
-                <p className="text-sm text-slate-500 mt-2">
+                <p className="text-sm mt-2 text-slate-500 dark:text-slate-300">
                   {budgetStatus}
                 </p>
               </div>
@@ -475,13 +457,16 @@ function DashboardPage() {
             <div className="grid md:grid-cols-3 gap-4 mb-6">
               <div
                 className="
-                  bg-white
                   p-5
                   rounded-2xl
                   shadow-md
+                  bg-white text-slate-900
+                  dark:bg-slate-800 dark:text-white
                 "
               >
-                <p className="text-slate-500">Average Expense</p>
+                <p className="text-slate-500 dark:text-slate-300">
+                  Average Expense
+                </p>
                 <h2 className="text-3xl font-bold mt-2">
                   ₹ {averageExpense}
                 </h2>
@@ -489,13 +474,16 @@ function DashboardPage() {
 
               <div
                 className="
-                  bg-white
                   p-5
                   rounded-2xl
                   shadow-md
+                  bg-white text-slate-900
+                  dark:bg-slate-800 dark:text-white
                 "
               >
-                <p className="text-slate-500">Highest Expense</p>
+                <p className="text-slate-500 dark:text-slate-300">
+                  Highest Expense
+                </p>
                 <h2 className="text-3xl font-bold mt-2 text-red-500">
                   ₹ {highestExpense}
                 </h2>
@@ -503,13 +491,16 @@ function DashboardPage() {
 
               <div
                 className="
-                  bg-white
                   p-5
                   rounded-2xl
                   shadow-md
+                  bg-white text-slate-900
+                  dark:bg-slate-800 dark:text-white
                 "
               >
-                <p className="text-slate-500">Lowest Expense</p>
+                <p className="text-slate-500 dark:text-slate-300">
+                  Lowest Expense
+                </p>
                 <h2 className="text-3xl font-bold mt-2 text-emerald-600">
                   ₹ {lowestExpense}
                 </h2>
@@ -519,26 +510,23 @@ function DashboardPage() {
             {/* Monthly Analytics */}
             <div
               className="
-                bg-white
                 rounded-3xl
                 shadow-lg
                 p-6
                 mb-6
+                bg-white text-slate-900
+                dark:bg-slate-800 dark:text-white
               "
             >
-              <h2
-                className="
-                  text-2xl
-                  font-bold
-                  mb-6
-                "
-              >
+              <h2 className="text-2xl font-bold mb-6">
                 Monthly Analytics
               </h2>
 
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
-                  <p className="text-slate-500">Monthly Spending</p>
+                  <p className="text-slate-500 dark:text-slate-300">
+                    Monthly Spending
+                  </p>
 
                   <h3 className="text-3xl font-bold mt-2">
                     ₹ {monthlySpending}
@@ -546,7 +534,9 @@ function DashboardPage() {
                 </div>
 
                 <div>
-                  <p className="text-slate-500">Daily Average</p>
+                  <p className="text-slate-500 dark:text-slate-300">
+                    Daily Average
+                  </p>
 
                   <h3 className="text-3xl font-bold mt-2">
                     ₹ {dailyAverage}
@@ -554,16 +544,11 @@ function DashboardPage() {
                 </div>
 
                 <div>
-                  <p className="text-slate-500">Budget Status</p>
+                  <p className="text-slate-500 dark:text-slate-300">
+                    Budget Status
+                  </p>
 
-                  <h3
-                    className="
-                      text-xl
-                      font-bold
-                      mt-2
-                      text-blue-600
-                    "
-                  >
+                  <h3 className="text-xl font-bold mt-2 text-blue-600">
                     {budgetStatus}
                   </h3>
                 </div>
@@ -573,11 +558,12 @@ function DashboardPage() {
             {/* Financial Insights */}
             <div
               className="
-                bg-white
                 rounded-3xl
                 shadow-lg
                 p-6
                 mb-6
+                bg-white text-slate-900
+                dark:bg-slate-800 dark:text-white
               "
             >
               <h2 className="text-2xl font-bold mb-6">
@@ -586,7 +572,9 @@ function DashboardPage() {
 
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
-                  <p className="text-slate-500">Top Category</p>
+                  <p className="text-slate-500 dark:text-slate-300">
+                    Top Category
+                  </p>
 
                   <h3 className="text-2xl font-bold mt-2">
                     {highestCategory}
@@ -594,7 +582,9 @@ function DashboardPage() {
                 </div>
 
                 <div>
-                  <p className="text-slate-500">Avg Transaction</p>
+                  <p className="text-slate-500 dark:text-slate-300">
+                    Avg Transaction
+                  </p>
 
                   <h3 className="text-2xl font-bold mt-2">
                     ₹ {averageTransaction}
@@ -602,16 +592,11 @@ function DashboardPage() {
                 </div>
 
                 <div>
-                  <p className="text-slate-500">Recommendation</p>
+                  <p className="text-slate-500 dark:text-slate-300">
+                    Recommendation
+                  </p>
 
-                  <h3
-                    className="
-                      text-xl
-                      font-bold
-                      mt-2
-                      text-indigo-600
-                    "
-                  >
+                  <h3 className="text-xl font-bold mt-2 text-indigo-600">
                     {recommendation}
                   </h3>
                 </div>
@@ -623,7 +608,7 @@ function DashboardPage() {
               <h2 className="text-3xl font-bold">
                 Expense Analytics
               </h2>
-              <p className="text-slate-500 mt-2">
+              <p className="mt-2 text-slate-500 dark:text-slate-300">
                 Category-wise spending insights
               </p>
             </div>
@@ -633,19 +618,14 @@ function DashboardPage() {
               {/* Category Analytics Pie Chart */}
               <div
                 className="
-                  bg-white
                   rounded-3xl
                   shadow-lg
                   p-6
+                  bg-white text-slate-900
+                  dark:bg-slate-800 dark:text-white
                 "
               >
-                <h2
-                  className="
-                    text-2xl
-                    font-bold
-                    mb-6
-                  "
-                >
+                <h2 className="text-2xl font-bold mb-6">
                   Category Analytics
                 </h2>
 
@@ -680,19 +660,14 @@ function DashboardPage() {
               {/* Spending Comparison Bar Chart */}
               <div
                 className="
-                  bg-white
                   rounded-3xl
                   shadow-lg
                   p-6
+                  bg-white text-slate-900
+                  dark:bg-slate-800 dark:text-white
                 "
               >
-                <h2
-                  className="
-                    text-2xl
-                    font-bold
-                    mb-6
-                  "
-                >
+                <h2 className="text-2xl font-bold mb-6">
                   Spending Comparison
                 </h2>
 
@@ -704,8 +679,8 @@ function DashboardPage() {
                 >
                   <ResponsiveContainer>
                     <BarChart data={categoryData}>
-                      <XAxis dataKey="name" />
-                      <YAxis />
+                      <XAxis dataKey="name" stroke="#64748b" />
+                      <YAxis stroke="#64748b" />
                       <Tooltip />
                       <Bar
                         dataKey="value"
@@ -767,32 +742,32 @@ function DashboardPage() {
             {/* Transactions */}
             <div
               className="
-                bg-white
                 rounded-3xl
                 shadow-lg
                 border
-                border-slate-200
                 overflow-hidden
+                bg-white text-slate-900 border-slate-200
+                dark:bg-slate-800 dark:text-white dark:border-slate-700
               "
             >
-              <div className="p-6 border-b border-slate-200">
+              <div className="p-6 border-b border-slate-200 dark:border-slate-700">
                 <h2 className="text-2xl font-bold">
                   Recent Transactions
                 </h2>
 
-                <p className="text-slate-500 mt-1">
+                <p className="mt-1 text-slate-500 dark:text-slate-300">
                   Latest expense activity
                 </p>
               </div>
 
               {expenses.length === 0 ? (
-                <div className="p-10 text-center text-slate-500">
+                <div className="p-10 text-center text-slate-500 dark:text-slate-300">
                   No expenses found
                 </div>
               ) : (
                 <table className="w-full">
                   <thead>
-                    <tr className="bg-slate-50">
+                    <tr className="bg-slate-50 dark:bg-slate-800">
                       <th className="text-left p-4 font-semibold">
                         Expense
                       </th>
@@ -818,8 +793,10 @@ function DashboardPage() {
                         className="
                           border-t
                           border-slate-100
-                          hover:bg-slate-50
                           transition-all
+                          hover:bg-slate-50
+                          dark:border-slate-700
+                          dark:hover:bg-slate-700
                         "
                       >
                         <td className="p-4">
@@ -843,7 +820,7 @@ function DashboardPage() {
                                 {expense.title}
                               </h4>
 
-                              <p className="text-sm text-slate-500">
+                              <p className="text-sm text-slate-500 dark:text-slate-300">
                                 Expense Record
                               </p>
                             </div>
@@ -856,9 +833,9 @@ function DashboardPage() {
                               px-3
                               py-1
                               rounded-full
-                              bg-slate-100
-                              text-slate-700
                               text-sm
+                              bg-slate-100 text-slate-700
+                              dark:bg-slate-700 dark:text-white
                             "
                           >
                             {expense.category}
@@ -962,19 +939,20 @@ function DashboardPage() {
 
             <div
               className="
-                bg-white
                 rounded-3xl
                 shadow-lg
                 p-6
                 sticky
                 top-6
+                bg-white text-slate-900
+                dark:bg-slate-800 dark:text-white
               "
             >
               <h2 className="text-2xl font-bold mb-2">
                 {editingId ? "Update Expense" : "Add Expense"}
               </h2>
 
-              <p className="text-slate-500 mb-6">
+              <p className="mb-6 text-slate-500 dark:text-slate-300">
                 Record a new transaction
               </p>
 
@@ -989,6 +967,8 @@ function DashboardPage() {
                   border
                   rounded-xl
                   mb-3
+                  bg-white border-slate-300
+                  dark:bg-slate-700 dark:border-slate-600 dark:text-white
                 "
               />
 
@@ -1018,6 +998,8 @@ function DashboardPage() {
                     p-3
                     border
                     rounded-xl
+                    bg-white border-slate-300
+                    dark:bg-slate-700 dark:border-slate-600 dark:text-white
                   "
                 />
 
@@ -1031,6 +1013,8 @@ function DashboardPage() {
                     p-3
                     border
                     rounded-xl
+                    bg-white border-slate-300
+                    dark:bg-slate-700 dark:border-slate-600 dark:text-white
                   "
                 />
 
@@ -1044,6 +1028,8 @@ function DashboardPage() {
                     p-3
                     border
                     rounded-xl
+                    bg-white border-slate-300
+                    dark:bg-slate-700 dark:border-slate-600 dark:text-white
                   "
                 />
 

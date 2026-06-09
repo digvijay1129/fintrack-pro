@@ -10,6 +10,13 @@ function BudgetPage() {
   // Step 1: Add State
   const [budgetAmount, setBudgetAmount] = useState("");
 
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const theme = localStorage.getItem("theme");
+    setDarkMode(theme === "dark");
+  }, []);
+
   const totalAmount = expenses.reduce(
     (total, expense) => total + expense.amount,
     0
@@ -83,17 +90,21 @@ function BudgetPage() {
   return (
     <DashboardLayout>
       <div className="p-8">
-        <h1 className="text-4xl font-bold mb-2">Budget</h1>
+        <h1 className={`text-4xl font-bold mb-2 ${darkMode ? "text-white" : "text-slate-900"}`}>Budget</h1>
 
-        <p className="text-slate-500 mb-8">Manage your monthly budget</p>
+        <p className={`mb-8 ${darkMode ? "text-slate-300" : "text-slate-500"}`}>Manage your monthly budget</p>
 
         <div
-          className="
-            bg-white
+          className={`
             rounded-3xl
             shadow-lg
             p-8
-          "
+            ${
+              darkMode
+                ? "bg-slate-800 text-white"
+                : "bg-white text-slate-900"
+            }
+          `}
         >
           <div
             className="
@@ -103,7 +114,7 @@ function BudgetPage() {
             "
           >
             <div>
-              <p className="text-slate-500">Current Budget</p>
+              <p className={darkMode ? "text-slate-300" : "text-slate-500"}>Current Budget</p>
 
               <h2 className="text-4xl font-bold mt-2">
                 ₹ {budget?.amount || 0}
@@ -111,7 +122,7 @@ function BudgetPage() {
             </div>
 
             <div>
-              <p className="text-slate-500">Total Spending</p>
+              <p className={darkMode ? "text-slate-300" : "text-slate-500"}>Total Spending</p>
 
               <h2 className="text-4xl font-bold mt-2 text-red-500">
                 ₹ {totalAmount}
@@ -119,7 +130,7 @@ function BudgetPage() {
             </div>
 
             <div>
-              <p className="text-slate-500">Remaining</p>
+              <p className={darkMode ? "text-slate-300" : "text-slate-500"}>Remaining</p>
 
               <h2 className="text-4xl font-bold mt-2 text-green-600">
                 ₹ {remainingBudget}
@@ -127,7 +138,7 @@ function BudgetPage() {
             </div>
 
             <div>
-              <p className="text-slate-500">Budget Used</p>
+              <p className={darkMode ? "text-slate-300" : "text-slate-500"}>Budget Used</p>
 
               <h2 className="text-4xl font-bold mt-2">
                 {budgetPercentage.toFixed(0)}%
@@ -137,12 +148,12 @@ function BudgetPage() {
 
           <div className="mt-8">
             <div
-              className="
+              className={`
                 h-4
                 rounded-full
-                bg-slate-200
                 overflow-hidden
-              "
+                ${darkMode ? "bg-slate-700" : "bg-slate-200"}
+              `}
             >
               <div
                 className="
@@ -168,11 +179,12 @@ function BudgetPage() {
 
           {/* Step 4: Budget Update Card */}
           <div
-            className="
+            className={`
               mt-10
-              border-t
               pt-8
-            "
+              border-t
+              ${darkMode ? "border-slate-700" : "border-slate-200"}
+            `}
           >
             <h2
               className="
@@ -189,13 +201,18 @@ function BudgetPage() {
               placeholder="Monthly Budget"
               value={budgetAmount}
               onChange={(e) => setBudgetAmount(e.target.value)}
-              className="
+              className={`
                 w-full
                 p-3
                 border
                 rounded-xl
                 mb-4
-              "
+                ${
+                  darkMode
+                    ? "bg-slate-700 border-slate-600 text-white"
+                    : "bg-white border-slate-300"
+                }
+              `}
             />
 
             <button
@@ -215,11 +232,12 @@ function BudgetPage() {
 
           {/* Step 2: Add Budget Insights Card */}
           <div
-            className="
+            className={`
               mt-10
-              border-t
               pt-8
-            "
+              border-t
+              ${darkMode ? "border-slate-700" : "border-slate-200"}
+            `}
           >
             <h2 className="text-2xl font-bold mb-6">
               Budget Insights
@@ -227,7 +245,7 @@ function BudgetPage() {
 
             <div className="grid md:grid-cols-3 gap-4">
               <div>
-                <p className="text-slate-500">
+                <p className={darkMode ? "text-slate-300" : "text-slate-500"}>
                   Average Expense
                 </p>
 
@@ -237,7 +255,7 @@ function BudgetPage() {
               </div>
 
               <div>
-                <p className="text-slate-500">
+                <p className={darkMode ? "text-slate-300" : "text-slate-500"}>
                   Highest Expense
                 </p>
 
@@ -247,11 +265,18 @@ function BudgetPage() {
               </div>
 
               <div>
-                <p className="text-slate-500">
+                <p className={darkMode ? "text-slate-300" : "text-slate-500"}>
                   Recommendation
                 </p>
 
-                <h3 className="text-xl font-bold mt-2 text-blue-600">
+                <h3 
+                  className={`
+                    text-xl 
+                    font-bold 
+                    mt-2 
+                    ${darkMode ? "text-blue-400" : "text-blue-600"}
+                  `}
+                >
                   {recommendation}
                 </h3>
               </div>

@@ -1,5 +1,5 @@
 import DashboardLayout from "../../layouts/DashboardLayout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function ProfilePage() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -12,21 +12,36 @@ function ProfilePage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const theme = localStorage.getItem("theme");
+    setDarkMode(theme === "dark");
+  }, []);
+
   return (
     <DashboardLayout>
       <div className="p-8">
-        <h1 className="text-4xl font-bold mb-2">Profile Settings</h1>
+        <h1 className={`text-4xl font-bold mb-2 ${darkMode ? "text-white" : "text-slate-900"}`}>
+          Profile Settings
+        </h1>
 
-        <p className="text-slate-500 mb-8">Manage your account</p>
+        <p className={`mb-8 ${darkMode ? "text-slate-300" : "text-slate-500"}`}>
+          Manage your account
+        </p>
 
         <div
-          className="
-            bg-white
+          className={`
             rounded-3xl
             shadow-lg
             p-8
             max-w-2xl
-          "
+            ${
+              darkMode
+              ? "bg-slate-800 text-white"
+              : "bg-white text-slate-900"
+            }
+          `}
         >
           <div className="mb-6">
             <div
@@ -51,29 +66,43 @@ function ProfilePage() {
 
             <h2 className="text-2xl font-bold">{user?.name}</h2>
 
-            <p className="text-slate-500">{user?.email}</p>
+            <p className={darkMode ? "text-slate-300" : "text-slate-500"}>
+              {user?.email}
+            </p>
 
             <div className="grid md:grid-cols-2 gap-4 mt-8">
               <div
-                className="
-                  bg-slate-50
+                className={`
                   rounded-2xl
                   p-5
-                "
+                  ${
+                    darkMode
+                    ? "bg-slate-700"
+                    : "bg-slate-50"
+                  }
+                `}
               >
-                <p className="text-slate-500">Account Type</p>
+                <p className={darkMode ? "text-slate-300" : "text-slate-500"}>
+                  Account Type
+                </p>
 
                 <h3 className="text-xl font-bold mt-2">Premium</h3>
               </div>
 
               <div
-                className="
-                  bg-slate-50
+                className={`
                   rounded-2xl
                   p-5
-                "
+                  ${
+                    darkMode
+                    ? "bg-slate-700"
+                    : "bg-slate-50"
+                  }
+                `}
               >
-                <p className="text-slate-500">Status</p>
+                <p className={darkMode ? "text-slate-300" : "text-slate-500"}>
+                  Status
+                </p>
 
                 <h3 className="text-xl font-bold mt-2 text-green-600">
                   Active
@@ -90,13 +119,18 @@ function ProfilePage() {
               placeholder="Full Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="
+              className={`
                 w-full
                 p-3
                 border
                 rounded-xl
                 mb-4
-              "
+                ${
+                  darkMode
+                  ? "bg-slate-700 border-slate-600 text-white"
+                  : "bg-white border-slate-300"
+                }
+              `}
             />
 
             <input
@@ -104,13 +138,18 @@ function ProfilePage() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="
+              className={`
                 w-full
                 p-3
                 border
                 rounded-xl
                 mb-4
-              "
+                ${
+                  darkMode
+                  ? "bg-slate-700 border-slate-600 text-white"
+                  : "bg-white border-slate-300"
+                }
+              `}
             />
 
             <button
@@ -143,7 +182,18 @@ function ProfilePage() {
           </div>
 
           {/* Step 2: Add Change Password Section */}
-          <div className="mt-10">
+          <div
+            className={`
+              mt-10
+              pt-8
+              border-t
+              ${
+                darkMode
+                ? "border-slate-700"
+                : "border-slate-200"
+              }
+            `}
+          >
             <h3 className="text-2xl font-bold mb-4">Change Password</h3>
 
             <input
@@ -151,13 +201,18 @@ function ProfilePage() {
               placeholder="Current Password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="
+              className={`
                 w-full
                 p-3
                 border
                 rounded-xl
                 mb-4
-              "
+                ${
+                  darkMode
+                  ? "bg-slate-700 border-slate-600 text-white"
+                  : "bg-white border-slate-300"
+                }
+              `}
             />
 
             <input
@@ -165,13 +220,18 @@ function ProfilePage() {
               placeholder="New Password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="
+              className={`
                 w-full
                 p-3
                 border
                 rounded-xl
                 mb-4
-              "
+                ${
+                  darkMode
+                  ? "bg-slate-700 border-slate-600 text-white"
+                  : "bg-white border-slate-300"
+                }
+              `}
             />
 
             <input
@@ -179,13 +239,18 @@ function ProfilePage() {
               placeholder="Confirm Password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="
+              className={`
                 w-full
                 p-3
                 border
                 rounded-xl
                 mb-4
-              "
+                ${
+                  darkMode
+                  ? "bg-slate-700 border-slate-600 text-white"
+                  : "bg-white border-slate-300"
+                }
+              `}
             />
 
             {/* Step 3: Add Update Password Button */}

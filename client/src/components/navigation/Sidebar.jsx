@@ -24,7 +24,6 @@ function Sidebar() {
       path: "/budget",
       icon: <FaBullseye />,
     },
-
     {
       name: "Reports",
       path: "/reports",
@@ -42,16 +41,26 @@ function Sidebar() {
       className="
         w-72
         min-h-screen
-        bg-slate-950
-        text-white
         flex
         flex-col
         border-r
-        border-slate-800
+        bg-white
+        text-slate-900
+        border-slate-200
+        dark:bg-slate-950
+        dark:text-white
+        dark:border-slate-800
       "
     >
       {/* Logo */}
-      <div className="p-8 border-b border-slate-800">
+      <div 
+        className="
+          p-8
+          border-b
+          border-slate-200
+          dark:border-slate-800
+        "
+      >
         <div className="flex items-center gap-3">
           <div
             className="
@@ -102,16 +111,17 @@ function Sidebar() {
               key={item.name}
               to={item.path}
               className="
-      flex
-      items-center
-      gap-3
-      p-4
-      rounded-2xl
-      hover:bg-slate-800
-      transition-all
-      duration-300
-      font-medium
-    "
+                flex
+                items-center
+                gap-3
+                p-4
+                rounded-2xl
+                transition-all
+                duration-300
+                font-medium
+                hover:bg-slate-100
+                dark:hover:bg-slate-800
+              "
             >
               <span className="text-lg">
                 {item.icon}
@@ -126,15 +136,23 @@ function Sidebar() {
       </div>
 
       {/* Bottom User Card */}
-      <div className="p-5 border-t border-slate-800">
+      <div 
+        className="
+          p-5
+          border-t
+          border-slate-200
+          dark:border-slate-800
+        "
+      >
         <div
           className="
-            bg-slate-900
             rounded-2xl
             p-4
             flex
             items-center
             gap-3
+            bg-slate-100
+            dark:bg-slate-900
           "
         >
           <div
@@ -149,6 +167,7 @@ function Sidebar() {
               items-center
               justify-center
               font-bold
+              text-white
             "
           >
             S

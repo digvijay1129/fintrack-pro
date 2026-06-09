@@ -2,12 +2,26 @@ import {
   FaBell,
   FaSearch,
   FaSignOutAlt,
+  FaMoon,
+  FaSun,
 } from "react-icons/fa";
+import { useState, useEffect } from "react";
 
 function Navbar() {
   const user = JSON.parse(
     localStorage.getItem("user")
   );
+
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === "dark") {
+      setDarkMode(true);
+      document.documentElement.classList.add("dark");
+    }
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -16,26 +30,53 @@ function Navbar() {
     window.location.href = "/login";
   };
 
+  const toggleTheme = () => {
+    if (darkMode) {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    } else {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    }
+
+    setDarkMode(!darkMode);
+  };
+
   return (
     <nav
-      className="
+      className={`
         h-20
-        bg-white
-        border-b
-        border-slate-200
         px-8
         flex
         items-center
         justify-between
-      "
+        border-b
+        ${
+          darkMode
+          ? "bg-slate-900 border-slate-700"
+          : "bg-white border-slate-200"
+        }
+      `}
     >
       {/* Left */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">
+        <h1 className={`
+          text-3xl
+          font-bold
+          ${
+            darkMode
+            ? "text-white"
+            : "text-slate-900"
+          }
+        `}>
           Dashboard
         </h1>
 
-        <p className="text-slate-500">
+        <p className={
+          darkMode
+          ? "text-slate-300"
+          : "text-slate-500"
+        }>
           Manage your finances
         </p>
       </div>
@@ -58,21 +99,46 @@ function Navbar() {
           <input
             type="text"
             placeholder="Search..."
-            className="
+            className={`
               pl-11
               pr-4
               py-3
               w-72
               rounded-2xl
               border
-              border-slate-200
-              bg-slate-50
               focus:outline-none
               focus:ring-2
               focus:ring-blue-500
-            "
+              ${
+                darkMode
+                ? "bg-slate-800 border-slate-700 text-white placeholder-slate-400"
+                : "bg-slate-50 border-slate-200"
+              }
+            `}
           />
         </div>
+
+        {/* Theme Toggle */}
+        <button
+          onClick={toggleTheme}
+          className={`
+            h-12
+            w-12
+            rounded-2xl
+            flex
+            items-center
+            justify-center
+            transition-all
+            hover:scale-105
+            ${
+              darkMode
+              ? "bg-slate-800 text-yellow-400"
+              : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+            }
+          `}
+        >
+          {darkMode ? <FaSun /> : <FaMoon />}
+        </button>
 
         {/* Notification */}
         <button
@@ -81,14 +147,18 @@ function Navbar() {
             w-12
             rounded-2xl
             bg-slate-100
+            text-slate-700
+            dark:bg-slate-800
+            dark:text-white
             flex
             items-center
             justify-center
             hover:bg-slate-200
+            dark:hover:bg-slate-700
             transition-all
           "
         >
-          <FaBell />
+          <FaBell className="text-lg" />
         </button>
 
         {/* User */}
@@ -112,11 +182,11 @@ function Navbar() {
           </div>
 
           <div>
-            <h4 className="font-semibold">
+            <h4 className="font-semibold dark:text-white">
               {user?.name}
             </h4>
 
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               Premium User
             </p>
           </div>
