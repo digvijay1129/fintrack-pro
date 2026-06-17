@@ -8,18 +8,36 @@ export const createBudget = async (
 ) => {
   const response = await axios.post(
     API_URL,
-    budgetData
+    budgetData,
+    getConfig()
   );
 
   return response.data;
 };
 
-export const getBudget = async (
-  userId
-) => {
-  const response = await axios.get(
-    `${API_URL}/${userId}`
-  );
+export const getBudget =
+  async () => {
 
-  return response.data;
+    const response =
+      await axios.get(
+        API_URL,
+        getConfig()
+      );
+
+    return response.data;
+
+  };
+
+const getConfig = () => {
+  const token =
+    localStorage.getItem(
+      "token"
+    );
+
+  return {
+    headers: {
+      Authorization:
+        `Bearer ${token}`,
+    },
+  };
 };

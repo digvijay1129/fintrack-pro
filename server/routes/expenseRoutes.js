@@ -7,14 +7,38 @@ const {
   updateExpense,
 } = require("../controllers/expenseController");
 
+const {
+  protect,
+} = require("../middleware/authMiddleware");
+
+const upload =
+require("../middleware/uploadMiddleware");
+
 const router = express.Router();
 
-router.post("/", createExpense);
+router.post(
+  "/",
+  protect,
+  upload.single("receipt"),
+  createExpense
+);
 
-router.get("/", getExpenses);
+router.get(
+  "/",
+  protect,
+  getExpenses
+);
 
-router.delete("/:id", deleteExpense);
+router.delete(
+  "/:id",
+  protect,
+  deleteExpense
+);
 
-router.put("/:id", updateExpense);
+router.put(
+  "/:id",
+  protect,
+  updateExpense
+);
 
 module.exports = router;

@@ -1,48 +1,60 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const generateToken = require("../utils/generateToken");
+const sendEmail = require("../utils/sendEmail");
 
 const registerUser = async (req, res) => {
-    try {
-        const { name, email, password } = req.body;
+  try {
+    const { name, email, password } = req.body;
 
-        const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email });
 
-        if (existingUser) {
-            return res.status(400).json({
-                message: "User already exists",
-            });
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const user = await User.create({
-            name,
-            email,
-            password: hashedPassword,
-        });
-
-        res.status(201).json({
-            message: "User registered successfully",
-            token: generateToken(user._id),
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-            },
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: error.message,
-        });
+    if (existingUser) {
+      return res.status(400).json({
+        message: "User already exists",
+      });
     }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
+    res.status(201).json({
+      message: "User registered successfully",
+      token: generateToken(user._id),
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };
 
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const allUsers = await User.find();
+
+    console.log("ALL USERS:");
+    console.log(allUsers);
+
+    const user = await User.findOne({
+      email: email.toLowerCase().trim(),
+    });
+
+    console.log("FOUND USER:");
+    console.log(user);
 
     if (!user) {
       return res.status(400).json({
@@ -77,7 +89,147 @@ const loginUser = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  try {
+    console.log(req.body);
+
+    const { email } = req.body;
+
+    console.log("Searching:", email);
+
+    if (!email) {
+      return res.status(400).json({
+        message: "Email required",
+      });
+    }
+
+    const user = await User.findOne({
+      email,
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const resetToken =
+      Math.random()
+        .toString(36)
+        .substring(2);
+
+    console.log("Reset Token:", resetToken);
+
+    user.resetToken = resetToken;
+
+    user.resetTokenExpiry =
+      Date.now() +
+      15 * 60 * 1000;
+
+    await user.save();
+
+    const resetLink = `http://localhost:5173/reset-password/${resetToken}`;
+
+    const html = `
+<h2>FinTrack Password Reset</h2>
+
+<p>Hello ${user.name},</p>
+
+<p>You requested a password reset.</p>
+
+<p>
+Click the link below to reset your password:
+</p>
+
+<a href="${resetLink}">
+Reset Password
+</a>
+
+<p>
+This link expires in 15 minutes.
+</p>
+
+<p>
+If you did not request this,
+please ignore this email.
+</p>
+`;
+
+    await sendEmail(
+      user.email,
+      "FinTrack Password Reset",
+      html
+    );
+
+    return res.status(200).json({
+      message: "User verified",
+      token: resetToken,
+    });
+
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({
+      message: "Server Error",
+    });
+  }
+};
+
+const resetPassword =
+  async (req, res) => {
+
+    try {
+
+      const {
+        token,
+        password,
+      } = req.body;
+
+      const user = await User.findOne({
+        resetToken: token,
+        resetTokenExpiry: {
+          $gt: Date.now(),
+        },
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          message: "Invalid or expired token",
+        });
+      }
+
+      const hashedPassword =
+        await bcrypt.hash(
+          password,
+          10
+        );
+
+      user.password = hashedPassword;
+
+      user.resetToken = undefined;
+      user.resetTokenExpiry = undefined;
+
+      await user.save();
+
+      return res.status(200).json({
+        message:
+          "Password updated successfully",
+      });
+
+    } catch (error) {
+
+      return res.status(500).json({
+        message:
+          "Server Error",
+      });
+
+    }
+
+  };
+
 module.exports = {
   registerUser,
   loginUser,
+  forgotPassword,
+  resetPassword,
 };

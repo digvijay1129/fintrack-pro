@@ -2,9 +2,11 @@ const Budget = require("../models/Budget");
 
 const createBudget = async (req, res) => {
   try {
-    const budget = await Budget.create(
-      req.body
-    );
+    const budget =
+      await Budget.create({
+        ...req.body,
+        user: req.user._id,
+      });
 
     res.status(201).json(budget);
 
@@ -18,7 +20,7 @@ const createBudget = async (req, res) => {
 const getBudget = async (req, res) => {
   try {
     const budget = await Budget.findOne({
-      user: req.params.userId,
+      user: req.user._id
     });
 
     res.status(200).json(budget);

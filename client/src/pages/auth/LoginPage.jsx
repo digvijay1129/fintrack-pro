@@ -7,7 +7,6 @@ import { loginUser } from "../../services/authService";
 import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
-
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -49,7 +48,6 @@ function LoginPage() {
     };
 
     return (
-
         <AuthLayout>
             <h1 className="text-3xl font-bold text-center mb-6">
                 Login
@@ -73,6 +71,19 @@ function LoginPage() {
                 text="Login"
                 onClick={handleLogin}
             />
+
+            <div className="mt-4 text-center">
+                <a
+                    href="/forgot-password"
+                    className="
+                        text-blue-600
+                        hover:underline
+                    "
+                >
+                    Forgot Password?
+                </a>
+            </div>
+
             <p className="text-center mt-4 text-slate-600">
                 Don't have an account?{" "}
                 <Link

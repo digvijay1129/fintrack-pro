@@ -1,6 +1,11 @@
-function Button({ text, onClick }) {
+function Button({
+  text,
+  onClick,
+  type = "button",
+}) {
   return (
     <button
+      type={type}
       onClick={onClick}
       className="
         w-full

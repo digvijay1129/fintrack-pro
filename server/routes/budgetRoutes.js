@@ -1,4 +1,7 @@
 const express = require("express");
+const {
+  protect,
+} = require("../middleware/authMiddleware");
 
 const {
   createBudget,
@@ -9,8 +12,16 @@ const {
 
 const router = express.Router();
 
-router.post("/", createBudget);
+router.post(
+  "/",
+  protect,
+  createBudget
+);
 
-router.get("/:userId", getBudget);
+router.get(
+  "/",
+  protect,
+  getBudget
+);
 
 module.exports = router;

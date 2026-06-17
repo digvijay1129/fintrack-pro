@@ -46,6 +46,7 @@ function DashboardPage() {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
+  const [receipt, setReceipt] = useState(null);
   const [editingId, setEditingId] = useState(null);
 
   const [budget, setBudget] = useState(null);
@@ -87,8 +88,8 @@ function DashboardPage() {
     budgetPercentage >= 100
       ? "Budget Exceeded"
       : budgetPercentage >= 80
-      ? "Near Budget Limit"
-      : "Budget Healthy";
+        ? "Near Budget Limit"
+        : "Budget Healthy";
 
   const categories = [
     ...new Set(expenses.map((expense) => expense.category)),
@@ -104,16 +105,16 @@ function DashboardPage() {
   const highestCategory =
     categories.length > 0
       ? categories.reduce((best, current) => {
-          const bestTotal = expenses
-            .filter((expense) => expense.category === best)
-            .reduce((sum, expense) => sum + expense.amount, 0);
+        const bestTotal = expenses
+          .filter((expense) => expense.category === best)
+          .reduce((sum, expense) => sum + expense.amount, 0);
 
-          const currentTotal = expenses
-            .filter((expense) => expense.category === current)
-            .reduce((sum, expense) => sum + expense.amount, 0);
+        const currentTotal = expenses
+          .filter((expense) => expense.category === current)
+          .reduce((sum, expense) => sum + expense.amount, 0);
 
-          return currentTotal > bestTotal ? current : best;
-        })
+        return currentTotal > bestTotal ? current : best;
+      })
       : "N/A";
 
   const averageTransaction =
@@ -142,10 +143,7 @@ function DashboardPage() {
 
   const handleCreateBudget = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
-
       const data = await createBudget({
-        user: user.id,
         amount: Number(budgetAmount),
       });
 
@@ -161,25 +159,22 @@ function DashboardPage() {
 
   const handleAddExpense = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
+      const formData = new FormData();
+      
+      formData.append("title", title);
+      formData.append("amount", Number(amount));
+      formData.append("category", category);
+      
+      if (receipt) {
+        formData.append("receipt", receipt);
+      }
 
       if (editingId) {
-        await updateExpense(editingId, {
-          title,
-          amount: Number(amount),
-          category,
-        });
-
+        await updateExpense(editingId, formData);
         alert("Expense Updated");
         setEditingId(null);
       } else {
-        await createExpense({
-          user: user.id,
-          title,
-          amount: Number(amount),
-          category,
-        });
-
+        await createExpense(formData);
         alert("Expense Added");
       }
 
@@ -189,6 +184,7 @@ function DashboardPage() {
       setTitle("");
       setAmount("");
       setCategory("");
+      setReceipt(null);
     } catch (error) {
       console.log(error);
       alert("Operation Failed");
@@ -207,7 +203,7 @@ function DashboardPage() {
     const today = new Date();
 
     const rawDate = today.toLocaleDateString();
-    const reportDate = rawDate.replace(/\//g, "-"); 
+    const reportDate = rawDate.replace(/\//g, "-");
     const reportTime = today.toLocaleTimeString();
 
     doc.setFontSize(22);
@@ -296,9 +292,8 @@ function DashboardPage() {
         const data = await getExpenses();
         setExpenses(data);
 
-        const user = JSON.parse(localStorage.getItem("user"));
+        const budgetData = await getBudget();
 
-        const budgetData = await getBudget(user.id);
         setBudget(budgetData);
       } catch (error) {
         console.log(error);
@@ -823,6 +818,21 @@ function DashboardPage() {
                               <p className="text-sm text-slate-500 dark:text-slate-300">
                                 Expense Record
                               </p>
+                              {expense.receipt && (
+                                <a
+                                  href={expense.receipt}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="
+                                    text-blue-600
+                                    text-sm
+                                    hover:underline
+                                    dark:text-blue-400
+                                  "
+                                >
+                                  📄 View Receipt
+                                </a>
+                              )}
                             </div>
                           </div>
                         </td>
@@ -1023,6 +1033,20 @@ function DashboardPage() {
                   placeholder="Category"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
+                  className="
+                    w-full
+                    p-3
+                    border
+                    rounded-xl
+                    bg-white border-slate-300
+                    dark:bg-slate-700 dark:border-slate-600 dark:text-white
+                  "
+                />
+                
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setReceipt(e.target.files[0])}
                   className="
                     w-full
                     p-3

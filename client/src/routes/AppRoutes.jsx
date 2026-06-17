@@ -10,6 +10,8 @@ import ExpensesPage from "../pages/dashboard/ExpensesPage";
 import ProfilePage from "../pages/dashboard/ProfilePage";
 import BudgetPage from "../pages/dashboard/BudgetPage";
 import ReportsPage from "../pages/dashboard/ReportsPage";
+import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage";
+import ResetPasswordPage from "../pages/auth/ResetPasswordPage";
 
 function AppRoutes() {
   return (
@@ -51,6 +53,17 @@ function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
 
       <Route path="/register" element={<RegisterPage />} />
+
+      <Route
+        path="/forgot-password"
+        element={<ForgotPasswordPage />}
+      />
+
+      <Route
+        path="/reset-password/:token"
+        element={<ResetPasswordPage />}
+      />
+
     </Routes>
   );
 }

@@ -6,7 +6,7 @@ import { getBudget, createBudget } from "../../services/budgetService";
 function BudgetPage() {
   const [expenses, setExpenses] = useState([]);
   const [budget, setBudget] = useState(null);
-  
+
   // Step 1: Add State
   const [budgetAmount, setBudgetAmount] = useState("");
 
@@ -33,8 +33,8 @@ function BudgetPage() {
     budgetPercentage >= 100
       ? "Budget Exceeded"
       : budgetPercentage >= 80
-      ? "Near Budget Limit"
-      : "Budget Healthy";
+        ? "Near Budget Limit"
+        : "Budget Healthy";
 
   // Step 1: Add Analytics Variables
   const averageExpense =
@@ -56,8 +56,8 @@ function BudgetPage() {
         const expenseData = await getExpenses();
         setExpenses(expenseData);
 
-        const user = JSON.parse(localStorage.getItem("user"));
-        const budgetData = await getBudget(user.id);
+        const budgetData = await getBudget();
+
         setBudget(budgetData);
       } catch (error) {
         console.log(error);
@@ -99,10 +99,9 @@ function BudgetPage() {
             rounded-3xl
             shadow-lg
             p-8
-            ${
-              darkMode
-                ? "bg-slate-800 text-white"
-                : "bg-white text-slate-900"
+            ${darkMode
+              ? "bg-slate-800 text-white"
+              : "bg-white text-slate-900"
             }
           `}
         >
@@ -207,10 +206,9 @@ function BudgetPage() {
                 border
                 rounded-xl
                 mb-4
-                ${
-                  darkMode
-                    ? "bg-slate-700 border-slate-600 text-white"
-                    : "bg-white border-slate-300"
+                ${darkMode
+                  ? "bg-slate-700 border-slate-600 text-white"
+                  : "bg-white border-slate-300"
                 }
               `}
             />
@@ -269,7 +267,7 @@ function BudgetPage() {
                   Recommendation
                 </p>
 
-                <h3 
+                <h3
                   className={`
                     text-xl 
                     font-bold 

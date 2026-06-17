@@ -26,8 +26,8 @@ function ReportsPage() {
         const expenseData = await getExpenses();
         setExpenses(expenseData);
 
-        const user = JSON.parse(localStorage.getItem("user"));
-        const budgetData = await getBudget(user.id);
+        const budgetData = await getBudget();
+
         setBudget(budgetData);
       } catch (error) {
         console.log(error);
@@ -109,10 +109,9 @@ function ReportsPage() {
             rounded-3xl
             shadow-lg
             p-8
-            ${
-              darkMode
-                ? "bg-slate-800 text-white"
-                : "bg-white text-slate-900"
+            ${darkMode
+              ? "bg-slate-800 text-white"
+              : "bg-white text-slate-900"
             }
           `}
         >
@@ -181,10 +180,9 @@ function ReportsPage() {
             shadow-lg
             p-8
             mt-6
-            ${
-              darkMode
-                ? "bg-slate-800 text-white"
-                : "bg-white text-slate-900"
+            ${darkMode
+              ? "bg-slate-800 text-white"
+              : "bg-white text-slate-900"
             }
           `}
         >
@@ -236,10 +234,9 @@ function ReportsPage() {
             shadow-lg
             p-8
             mt-6
-            ${
-              darkMode
-                ? "bg-slate-800 text-white"
-                : "bg-white text-slate-900"
+            ${darkMode
+              ? "bg-slate-800 text-white"
+              : "bg-white text-slate-900"
             }
           `}
         >

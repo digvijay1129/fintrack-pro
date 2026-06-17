@@ -23,10 +23,16 @@ const expenseSchema = new mongoose.Schema(
       required: true,
     },
 
+    receipt: {
+      type: String,
+      default: "",
+    },
+
     date: {
       type: Date,
       default: Date.now,
     },
+
   },
   {
     timestamps: true,
