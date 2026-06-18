@@ -31,6 +31,7 @@ const registerUser = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        currency: user.currency,
       },
     });
   } catch (error) {
@@ -44,17 +45,9 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const allUsers = await User.find();
-
-    console.log("ALL USERS:");
-    console.log(allUsers);
-
     const user = await User.findOne({
       email: email.toLowerCase().trim(),
     });
-
-    console.log("FOUND USER:");
-    console.log(user);
 
     if (!user) {
       return res.status(400).json({
@@ -80,6 +73,7 @@ const loginUser = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        currency: user.currency,
       },
     });
   } catch (error) {
@@ -91,11 +85,7 @@ const loginUser = async (req, res) => {
 
 const forgotPassword = async (req, res) => {
   try {
-    console.log(req.body);
-
     const { email } = req.body;
-
-    console.log("Searching:", email);
 
     if (!email) {
       return res.status(400).json({
@@ -117,8 +107,6 @@ const forgotPassword = async (req, res) => {
       Math.random()
         .toString(36)
         .substring(2);
-
-    console.log("Reset Token:", resetToken);
 
     user.resetToken = resetToken;
 
@@ -171,6 +159,34 @@ please ignore this email.
 
     return res.status(500).json({
       message: "Server Error",
+    });
+  }
+};
+
+const updateCurrency = async (req, res) => {
+  try {
+    const { currency } = req.body;
+
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    user.currency = currency;
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Currency updated",
+      currency: user.currency,
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
     });
   }
 };
@@ -232,4 +248,5 @@ module.exports = {
   loginUser,
   forgotPassword,
   resetPassword,
+  updateCurrency,
 };

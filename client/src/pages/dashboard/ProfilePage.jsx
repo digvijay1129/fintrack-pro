@@ -1,11 +1,13 @@
 import DashboardLayout from "../../layouts/DashboardLayout";
 import { useState, useEffect } from "react";
+import { updateCurrency } from "../../services/authService";
 
 function ProfilePage() {
   const user = JSON.parse(localStorage.getItem("user"));
 
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
+  const [currency, setCurrency] = useState(user?.currency || "INR");
 
   // Step 1: Add Password States
   const [currentPassword, setCurrentPassword] = useState("");
@@ -152,19 +154,51 @@ function ProfilePage() {
               `}
             />
 
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+              className={`
+                w-full
+                p-3
+                border
+                rounded-xl
+                mb-4
+                ${
+                  darkMode
+                  ? "bg-slate-700 border-slate-600 text-white"
+                  : "bg-white border-slate-300"
+                }
+              `}
+            >
+              <option value="INR">₹ INR</option>
+              <option value="USD">$ USD</option>
+              <option value="EUR">€ EUR</option>
+              <option value="GBP">£ GBP</option>
+            </select>
+
             <button
-              onClick={() => {
-                const updatedUser = {
-                  ...user,
-                  name,
-                  email,
-                };
+              onClick={async () => {
+                try {
+                  await updateCurrency(currency);
 
-                localStorage.setItem("user", JSON.stringify(updatedUser));
+                  const updatedUser = {
+                    ...user,
+                    name,
+                    email,
+                    currency,
+                  };
 
-                alert("Profile Updated");
+                  localStorage.setItem(
+                    "user",
+                    JSON.stringify(updatedUser)
+                  );
 
-                window.location.reload();
+                  alert("Profile Updated");
+
+                  window.location.reload();
+                } catch (error) {
+                  alert("Update Failed");
+                }
               }}
               className="
                 bg-gradient-to-r

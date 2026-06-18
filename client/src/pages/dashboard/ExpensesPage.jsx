@@ -2,6 +2,8 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 import { useEffect, useState } from "react";
 
 import { getExpenses } from "../../services/expenseService";
+import { getCurrencySymbol } from "../../utils/currency";
+import { convertCurrency } from "../../utils/currencyConverter";
 
 import {
   BarChart,
@@ -13,6 +15,9 @@ import {
 } from "recharts";
 
 function ExpensesPage() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const currency = getCurrencySymbol(user?.currency);
+
   const [expenses, setExpenses] = useState([]);
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
@@ -137,7 +142,7 @@ function ExpensesPage() {
             </p>
 
             <h2 className="text-3xl font-bold mt-2 text-emerald-600">
-              ₹ {totalSpending}
+              {currency} {convertCurrency(totalSpending, user?.currency)}
             </h2>
           </div>
 
@@ -179,7 +184,7 @@ function ExpensesPage() {
             </p>
 
             <h2 className="text-3xl font-bold mt-2 text-red-500">
-              ₹ {highestExpense}
+              {currency} {convertCurrency(highestExpense, user?.currency)}
             </h2>
           </div>
         </div>
@@ -276,6 +281,7 @@ function ExpensesPage() {
                 />
                 <YAxis stroke={darkMode ? "#cbd5e1" : "#64748b"} />
                 <Tooltip 
+                  formatter={(value) => `${currency} ${convertCurrency(value, user?.currency)}`}
                   contentStyle={darkMode ? { backgroundColor: "#1e293b", borderColor: "#334155", color: "#fff" } : {}}
                 />
                 <Bar
@@ -378,7 +384,7 @@ function ExpensesPage() {
 
                 <div className="text-right">
                   <p className="text-2xl font-bold text-emerald-600">
-                    ₹ {expense.amount}
+                    {currency} {convertCurrency(expense.amount, user?.currency)}
                   </p>
 
                   <p

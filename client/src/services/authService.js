@@ -43,3 +43,23 @@ export const resetPassword = async (
 
   return response.data;
 };
+
+export const updateCurrency = async (
+  currency
+) => {
+  const token = localStorage.getItem("token");
+
+  const response = await axios.put(
+    `${API_URL}/currency`,
+    {
+      currency,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};

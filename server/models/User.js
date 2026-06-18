@@ -20,6 +20,12 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
 
+    currency: {
+      type: String,
+      enum: ["INR", "USD", "EUR", "GBP"],
+      default: "INR",
+    },
+
     resetToken: {
       type: String,
     },

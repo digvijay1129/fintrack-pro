@@ -2,14 +2,18 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 import { useEffect, useState } from "react";
 import { getExpenses } from "../../services/expenseService";
 import { getBudget } from "../../services/budgetService";
+import { getCurrencySymbol } from "../../utils/currency";
+import { convertCurrency } from "../../utils/currencyConverter";
 
-// Step 2: Add imports
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
 function ReportsPage() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const currency = getCurrencySymbol(user?.currency);
+
   const [expenses, setExpenses] = useState([]);
   const [budget, setBudget] = useState(null);
 
@@ -48,12 +52,14 @@ function ReportsPage() {
     ? (totalAmount / expenses.length).toFixed(2)
     : 0;
 
-  // Step 3: Replace PDF Function
   const handlePDFExport = () => {
     const doc = new jsPDF();
 
     doc.setFontSize(20);
     doc.text("FinTrack Report", 20, 20);
+
+    doc.setFontSize(12);
+    doc.text(`Currency: ${user?.currency || "INR"}`, 20, 30);
 
     autoTable(doc, {
       startY: 35,
@@ -61,20 +67,28 @@ function ReportsPage() {
       body: expenses.map((expense) => [
         expense.title,
         expense.category,
-        `₹ ${expense.amount}`,
+        `${currency}${convertCurrency(expense.amount, user?.currency)}`,
       ]),
     });
 
     doc.save("FinTrack_Report.pdf");
   };
 
-  // Step 4: Replace Excel Function
   const handleExcelExport = () => {
-    const data = expenses.map((expense) => ({
-      Expense: expense.title,
-      Category: expense.category,
-      Amount: expense.amount,
-    }));
+    const user = JSON.parse(localStorage.getItem("user"));
+    const currency = getCurrencySymbol(user?.currency);
+
+    const data = [
+      {
+        Currency: user?.currency || "INR",
+      },
+      {},
+      ...expenses.map((expense) => ({
+        Expense: expense.title,
+        Category: expense.category,
+        Amount: `${currency}${convertCurrency(expense.amount, user?.currency)}`,
+      })),
+    ];
 
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
@@ -144,7 +158,7 @@ function ReportsPage() {
                 Total Spending
               </p>
               <h3 className="text-3xl font-bold text-green-600">
-                ₹ {totalAmount}
+                {currency} {convertCurrency(totalAmount, user?.currency)}
               </h3>
             </div>
 
@@ -152,7 +166,9 @@ function ReportsPage() {
               <p className={darkMode ? "text-slate-300" : "text-slate-500"}>
                 Budget
               </p>
-              <h3 className="text-3xl font-bold">₹ {budget?.amount || 0}</h3>
+              <h3 className="text-3xl font-bold">
+                {currency} {convertCurrency(budget?.amount || 0, user?.currency)}
+              </h3>
             </div>
 
             <div>
@@ -160,7 +176,7 @@ function ReportsPage() {
                 Remaining
               </p>
               <h3 className="text-3xl font-bold text-blue-600">
-                ₹ {remainingBudget}
+                {currency} {convertCurrency(remainingBudget, user?.currency)}
               </h3>
             </div>
 
@@ -168,12 +184,13 @@ function ReportsPage() {
               <p className={darkMode ? "text-slate-300" : "text-slate-500"}>
                 Average Expense
               </p>
-              <h3 className="text-3xl font-bold">₹ {averageExpense}</h3>
+              <h3 className="text-3xl font-bold">
+                {currency} {convertCurrency(Number(averageExpense), user?.currency)}
+              </h3>
             </div>
           </div>
         </div>
 
-        {/* Step 1: Export Center */}
         <div
           className={`
             rounded-3xl
@@ -191,7 +208,6 @@ function ReportsPage() {
           </h2>
 
           <div className="grid md:grid-cols-2 gap-4">
-            {/* Step 2: PDF Button */}
             <button
               onClick={handlePDFExport}
               className="
@@ -208,7 +224,6 @@ function ReportsPage() {
               📄 Export PDF
             </button>
 
-            {/* Step 3: Excel Button */}
             <button
               onClick={handleExcelExport}
               className="
@@ -227,7 +242,6 @@ function ReportsPage() {
           </div>
         </div>
 
-        {/* Step 2: Report Statistics */}
         <div
           className={`
             rounded-3xl
@@ -268,7 +282,7 @@ function ReportsPage() {
                 Average Expense
               </p>
               <h3 className="text-3xl font-bold">
-                ₹ {averageExpense}
+                {currency} {convertCurrency(Number(averageExpense), user?.currency)}
               </h3>
             </div>
           </div>

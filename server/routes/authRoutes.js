@@ -5,8 +5,13 @@ const {
   loginUser,
   forgotPassword,
   resetPassword,
-} =
-require("../controllers/authController");
+  updateCurrency,
+} = require("../controllers/authController");
+
+const {
+  protect,
+} = require("../middleware/authMiddleware");
+
 
 const router = express.Router();
 
@@ -22,6 +27,12 @@ router.post(
 router.post(
   "/reset-password",
   resetPassword
+);
+
+router.put(
+  "/currency",
+  protect,
+  updateCurrency
 );
 
 module.exports = router;

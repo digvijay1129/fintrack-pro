@@ -4,6 +4,8 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { getCurrencySymbol } from "../../utils/currency";
+import { convertCurrency } from "../../utils/currencyConverter";
 
 import {
   getExpenses,
@@ -41,6 +43,17 @@ const COLORS = [
 ];
 
 function DashboardPage() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  
+  const currencySymbols = {
+    INR: "₹",
+    USD: "$",
+    EUR: "€",
+    GBP: "£",
+  };
+  
+  const currency = currencySymbols[user?.currency] || "₹";
+
   const [expenses, setExpenses] = useState([]);
 
   const [title, setTitle] = useState("");
@@ -52,6 +65,13 @@ function DashboardPage() {
   const [budget, setBudget] = useState(null);
 
   const [budgetAmount, setBudgetAmount] = useState("");
+
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const theme = localStorage.getItem("theme");
+    setDarkMode(theme === "dark");
+  }, []);
 
   const totalAmount = expenses.reduce(
     (total, expense) => total + expense.amount,
@@ -217,13 +237,13 @@ function DashboardPage() {
     doc.text(`Time: ${reportTime}`, 120, 45);
 
     doc.text(`Total Expenses: ${expenses.length}`, 20, 60);
-    doc.text(`Total Spending: ₹ ${totalAmount}`, 20, 70);
-    doc.text(`Budget: ₹ ${budget?.amount || 0}`, 20, 80);
-    doc.text(`Remaining: ₹ ${remainingBudget}`, 20, 90);
+    doc.text(`Total Spending: ${currency} ${convertCurrency(totalAmount, user?.currency)}`, 20, 70);
+    doc.text(`Budget: ${currency} ${convertCurrency(budget?.amount || 0, user?.currency)}`, 20, 80);
+    doc.text(`Remaining: ${currency} ${convertCurrency(remainingBudget, user?.currency)}`, 20, 90);
 
-    doc.text(`Average Expense: ₹ ${averageExpense}`, 20, 100);
-    doc.text(`Highest Expense: ₹ ${highestExpense}`, 20, 110);
-    doc.text(`Lowest Expense: ₹ ${lowestExpense}`, 20, 120);
+    doc.text(`Average Expense: ${currency} ${convertCurrency(averageExpense, user?.currency)}`, 20, 100);
+    doc.text(`Highest Expense: ${currency} ${convertCurrency(highestExpense, user?.currency)}`, 20, 110);
+    doc.text(`Lowest Expense: ${currency} ${convertCurrency(lowestExpense, user?.currency)}`, 20, 120);
 
     doc.text(`Budget Status: ${budgetStatus}`, 20, 130);
 
@@ -233,7 +253,7 @@ function DashboardPage() {
       body: expenses.map((expense) => [
         expense.title,
         expense.category,
-        `₹ ${expense.amount}`,
+        `${currency} ${convertCurrency(expense.amount, user?.currency)}`,
       ]),
     });
 
@@ -376,7 +396,7 @@ function DashboardPage() {
             </p>
 
             <h2 className="text-4xl font-bold mt-3 text-emerald-600">
-              ₹ {totalAmount}
+              {currency} {convertCurrency(totalAmount, user?.currency)}
             </h2>
 
             <p className="mt-2 text-slate-400">This Month</p>
@@ -463,7 +483,7 @@ function DashboardPage() {
                   Average Expense
                 </p>
                 <h2 className="text-3xl font-bold mt-2">
-                  ₹ {averageExpense}
+                  {currency} {convertCurrency(averageExpense, user?.currency)}
                 </h2>
               </div>
 
@@ -480,7 +500,7 @@ function DashboardPage() {
                   Highest Expense
                 </p>
                 <h2 className="text-3xl font-bold mt-2 text-red-500">
-                  ₹ {highestExpense}
+                  {currency} {convertCurrency(highestExpense, user?.currency)}
                 </h2>
               </div>
 
@@ -497,7 +517,7 @@ function DashboardPage() {
                   Lowest Expense
                 </p>
                 <h2 className="text-3xl font-bold mt-2 text-emerald-600">
-                  ₹ {lowestExpense}
+                  {currency} {convertCurrency(lowestExpense, user?.currency)}
                 </h2>
               </div>
             </div>
@@ -524,7 +544,7 @@ function DashboardPage() {
                   </p>
 
                   <h3 className="text-3xl font-bold mt-2">
-                    ₹ {monthlySpending}
+                    {currency} {convertCurrency(monthlySpending, user?.currency)}
                   </h3>
                 </div>
 
@@ -534,7 +554,7 @@ function DashboardPage() {
                   </p>
 
                   <h3 className="text-3xl font-bold mt-2">
-                    ₹ {dailyAverage}
+                    {currency} {convertCurrency(dailyAverage, user?.currency)}
                   </h3>
                 </div>
 
@@ -582,7 +602,7 @@ function DashboardPage() {
                   </p>
 
                   <h3 className="text-2xl font-bold mt-2">
-                    ₹ {averageTransaction}
+                    {currency} {convertCurrency(averageTransaction, user?.currency)}
                   </h3>
                 </div>
 
@@ -646,7 +666,7 @@ function DashboardPage() {
                         ))}
                       </Pie>
 
-                      <Tooltip />
+                      <Tooltip formatter={(value) => `${currency} ${convertCurrency(value, user?.currency)}`} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
@@ -676,7 +696,7 @@ function DashboardPage() {
                     <BarChart data={categoryData}>
                       <XAxis dataKey="name" stroke="#64748b" />
                       <YAxis stroke="#64748b" />
-                      <Tooltip />
+                      <Tooltip formatter={(value) => `${currency} ${convertCurrency(value, user?.currency)}`} />
                       <Bar
                         dataKey="value"
                         fill="#2563eb"
@@ -860,7 +880,7 @@ function DashboardPage() {
 
                         <td className="p-4 text-right">
                           <div className="font-bold text-lg text-emerald-600">
-                            ₹ {expense.amount}
+                            {currency} {convertCurrency(expense.amount, user?.currency)}
                           </div>
 
                           <button
@@ -919,11 +939,11 @@ function DashboardPage() {
                 Budget Summary
               </h3>
 
-              <p>Budget: ₹ {budget?.amount || 0}</p>
+              <p>Budget: {currency} {convertCurrency(budget?.amount || 0, user?.currency)}</p>
 
-              <p className="mt-2">Spent: ₹ {totalAmount}</p>
+              <p className="mt-2">Spent: {currency} {convertCurrency(totalAmount, user?.currency)}</p>
 
-              <p className="mt-2">Remaining: ₹ {remainingBudget}</p>
+              <p className="mt-2">Remaining: {currency} {convertCurrency(remainingBudget, user?.currency)}</p>
 
               <div
                 className="

@@ -2,8 +2,13 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 import { useEffect, useState } from "react";
 import { getExpenses } from "../../services/expenseService";
 import { getBudget, createBudget } from "../../services/budgetService";
+import { getCurrencySymbol } from "../../utils/currency";
+import { convertCurrency } from "../../utils/currencyConverter";
 
 function BudgetPage() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const currency = getCurrencySymbol(user?.currency);
+
   const [expenses, setExpenses] = useState([]);
   const [budget, setBudget] = useState(null);
 
@@ -70,8 +75,6 @@ function BudgetPage() {
   // Step 3: Create Budget Handler
   const handleBudgetUpdate = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("user"));
-
       const data = await createBudget({
         user: user.id,
         amount: Number(budgetAmount),
@@ -116,7 +119,7 @@ function BudgetPage() {
               <p className={darkMode ? "text-slate-300" : "text-slate-500"}>Current Budget</p>
 
               <h2 className="text-4xl font-bold mt-2">
-                ₹ {budget?.amount || 0}
+                {currency} {convertCurrency(budget?.amount || 0, user?.currency)}
               </h2>
             </div>
 
@@ -124,7 +127,7 @@ function BudgetPage() {
               <p className={darkMode ? "text-slate-300" : "text-slate-500"}>Total Spending</p>
 
               <h2 className="text-4xl font-bold mt-2 text-red-500">
-                ₹ {totalAmount}
+                {currency} {convertCurrency(totalAmount, user?.currency)}
               </h2>
             </div>
 
@@ -132,7 +135,7 @@ function BudgetPage() {
               <p className={darkMode ? "text-slate-300" : "text-slate-500"}>Remaining</p>
 
               <h2 className="text-4xl font-bold mt-2 text-green-600">
-                ₹ {remainingBudget}
+                {currency} {convertCurrency(remainingBudget, user?.currency)}
               </h2>
             </div>
 
@@ -248,7 +251,7 @@ function BudgetPage() {
                 </p>
 
                 <h3 className="text-2xl font-bold mt-2">
-                  ₹ {averageExpense}
+                  {currency} {convertCurrency(averageExpense, user?.currency)}
                 </h3>
               </div>
 
@@ -258,7 +261,7 @@ function BudgetPage() {
                 </p>
 
                 <h3 className="text-2xl font-bold mt-2 text-red-500">
-                  ₹ {highestExpense}
+                  {currency} {convertCurrency(highestExpense, user?.currency)}
                 </h3>
               </div>
 
