@@ -12,6 +12,7 @@ import BudgetPage from "../pages/dashboard/BudgetPage";
 import ReportsPage from "../pages/dashboard/ReportsPage";
 import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage";
 import ResetPasswordPage from "../pages/auth/ResetPasswordPage";
+import RecurringExpensesPage from "../pages/dashboard/RecurringExpensesPage";
 
 function AppRoutes() {
   return (
@@ -33,6 +34,11 @@ function AppRoutes() {
       <Route
         path="/dashboard"
         element={<DashboardPage />}
+      />
+
+      <Route
+        path="/recurring-expenses"
+        element={<RecurringExpensesPage />}
       />
 
       <Route

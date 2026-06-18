@@ -5,6 +5,7 @@ import {
   FaBullseye,
   FaChartLine,
   FaCog,
+  FaSyncAlt,
 } from "react-icons/fa";
 
 function Sidebar() {
@@ -23,6 +24,11 @@ function Sidebar() {
       name: "Budget",
       path: "/budget",
       icon: <FaBullseye />,
+    },
+    {
+      name: "Recurring",
+      path: "/recurring-expenses",
+      icon: <FaSyncAlt />,
     },
     {
       name: "Reports",

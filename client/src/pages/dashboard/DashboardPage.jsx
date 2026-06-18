@@ -19,6 +19,8 @@ import {
   getBudget,
 } from "../../services/budgetService";
 
+import { getRecurringExpenses } from "../../services/recurringExpenseService";
+
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 import {
@@ -55,6 +57,7 @@ function DashboardPage() {
   const currency = currencySymbols[user?.currency] || "₹";
 
   const [expenses, setExpenses] = useState([]);
+  const [recurringExpenses, setRecurringExpenses] = useState([]);
 
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
@@ -313,8 +316,10 @@ function DashboardPage() {
         setExpenses(data);
 
         const budgetData = await getBudget();
-
         setBudget(budgetData);
+
+        const recurringData = await getRecurringExpenses();
+        setRecurringExpenses(recurringData);
       } catch (error) {
         console.log(error);
       }
@@ -972,8 +977,6 @@ function DashboardPage() {
                 rounded-3xl
                 shadow-lg
                 p-6
-                sticky
-                top-6
                 bg-white text-slate-900
                 dark:bg-slate-800 dark:text-white
               "
@@ -1092,6 +1095,91 @@ function DashboardPage() {
                 >
                   {editingId ? "Update Expense" : "Add Expense"}
                 </button>
+              </div>
+            </div>
+
+            <div
+              className="
+                bg-white
+                dark:bg-slate-800
+                rounded-3xl
+                shadow-lg
+                p-6
+                mt-6
+                mb-6
+              "
+            >
+              <h2
+                className="
+                  text-2xl
+                  font-bold
+                  mb-4
+                "
+              >
+                Upcoming Bills
+              </h2>
+
+              <div className="space-y-3">
+                {recurringExpenses.length === 0 ? (
+                  <p className="text-slate-500 dark:text-slate-400">
+                    No upcoming bills
+                  </p>
+                ) : (
+                  recurringExpenses
+                    .slice(0, 5)
+                    .map((expense) => (
+                      <div
+                        key={expense._id}
+                        className="
+                          p-4
+                          rounded-2xl
+                          bg-slate-50
+                          dark:bg-slate-700
+                          hover:scale-[1.02]
+                          transition-all
+                        "
+                      >
+                        <h3 className="font-semibold text-slate-900 dark:text-white mb-1">
+                          {expense.title}
+                        </h3>
+
+                        <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400 mb-2">
+                          {currency} {convertCurrency(expense.amount, user?.currency)}
+                        </p>
+
+                        <div className="mb-2">
+                          <span
+                            className={`
+                              inline-block
+                              px-2
+                              py-1
+                              rounded-full
+                              text-xs
+                              text-white
+                              font-semibold
+                              capitalize
+                              ${
+                                expense.frequency === "daily" || expense.frequency === "Daily"
+                                  ? "bg-yellow-500"
+                                  : expense.frequency === "weekly" || expense.frequency === "Weekly"
+                                  ? "bg-blue-500"
+                                  : expense.frequency === "monthly" || expense.frequency === "Monthly"
+                                  ? "bg-green-500"
+                                  : "bg-purple-500"
+                              }
+                            `}
+                          >
+                            {expense.frequency}
+                          </span>
+                        </div>
+
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                          📅 Due:{" "}
+                          {new Date(expense.nextDueDate).toLocaleDateString()}
+                        </p>
+                      </div>
+                    ))
+                )}
               </div>
             </div>
           </div>

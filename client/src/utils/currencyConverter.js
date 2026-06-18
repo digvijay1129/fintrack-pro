@@ -16,3 +16,24 @@ export const convertCurrency = (
     amount / rate
   ).toFixed(2);
 };
+
+export const formatCurrency = (
+  amount,
+  currency
+) => {
+
+  const symbols = {
+    INR: "₹",
+    USD: "$",
+    EUR: "€",
+    GBP: "£",
+  };
+
+  return (
+    symbols[currency] +
+    convertCurrency(
+      amount,
+      currency
+    )
+  );
+};
