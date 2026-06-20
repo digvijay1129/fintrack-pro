@@ -24,12 +24,28 @@ const recurringExpenseJob = () => {
                     category: recurringExpense.category,
                 });
 
-                await Notification.create({
-                    user: recurringExpense.user,
-                    title: "Recurring Bill Due",
-                    message: `${recurringExpense.title} payment processed automatically.`,
-                    type: "info",
-                });
+                await Notification.findOneAndUpdate(
+                    {
+                        user: recurringExpense.user,
+                        title: "Recurring Bill Processed",
+                        message: `⚠ ${recurringExpense.title} recurring payment of ₹${recurringExpense.amount} was processed automatically.`,
+                        month: new Date().getMonth() + 1,
+                        year: new Date().getFullYear(),
+                    },
+                    {
+                        user: recurringExpense.user,
+                        title: "Recurring Bill Processed",
+                        message: `⚠ ${recurringExpense.title} recurring payment of ₹${recurringExpense.amount} was processed automatically.`,
+                        type: "info",
+                        isRead: false,
+                        month: new Date().getMonth() + 1,
+                        year: new Date().getFullYear(),
+                    },
+                    {
+                        upsert: true,
+                        new: true,
+                    }
+                );
 
                 console.log(
                     `✅ Expense created: ${recurringExpense.title}`

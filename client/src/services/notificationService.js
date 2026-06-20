@@ -33,7 +33,56 @@ const markAsRead = async (id) => {
   return response.data;
 };
 
+const markAllAsRead = async () => {
+  const token = localStorage.getItem("token");
+
+  const response = await axios.put(
+    `${API}/mark-all-read`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
+const deleteNotification = async (id) => {
+  const token = localStorage.getItem("token");
+
+  const response = await axios.delete(
+    `${API}/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
+const clearAllNotifications = async () => {
+  const token = localStorage.getItem("token");
+
+  const response = await axios.delete(
+    `${API}/clear-all`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
 export {
   getNotifications,
   markAsRead,
+  markAllAsRead,
+  deleteNotification,
+  clearAllNotifications,
 };

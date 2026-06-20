@@ -36,6 +36,13 @@ const notificationRoutes =
     "./routes/notificationRoutes"
   );
 
+const dueTomorrowReminderJob =
+require(
+"./jobs/dueTomorrowReminderJob"
+);
+
+dueTomorrowReminderJob();
+
 app.use(
 "/api/notifications",
 notificationRoutes
