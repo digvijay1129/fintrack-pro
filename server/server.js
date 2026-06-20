@@ -7,7 +7,7 @@ const recurringExpenseRoutes = require(
   "./routes/recurringExpenseRoutes"
 );
 const recurringExpenseJob =
-require("./jobs/recurringExpenseJob");
+  require("./jobs/recurringExpenseJob");
 
 const express = require("express");
 const cors = require("cors");
@@ -30,6 +30,15 @@ app.use("/api/budgets", budgetRoutes);
 app.use(
   "/api/recurring-expenses",
   recurringExpenseRoutes
+);
+const notificationRoutes =
+  require(
+    "./routes/notificationRoutes"
+  );
+
+app.use(
+"/api/notifications",
+notificationRoutes
 );
 
 const PORT = process.env.PORT || 5000;

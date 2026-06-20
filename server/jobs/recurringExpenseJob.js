@@ -1,6 +1,7 @@
 const cron = require("node-cron");
 const RecurringExpense = require("../models/RecurringExpense");
 const Expense = require("../models/Expense");
+const Notification = require("../models/Notification");
 
 const recurringExpenseJob = () => {
     cron.schedule("* * * * *", async () => {
@@ -21,6 +22,13 @@ const recurringExpenseJob = () => {
                     title: recurringExpense.title,
                     amount: recurringExpense.amount,
                     category: recurringExpense.category,
+                });
+
+                await Notification.create({
+                    user: recurringExpense.user,
+                    title: "Recurring Bill Due",
+                    message: `${recurringExpense.title} payment processed automatically.`,
+                    type: "info",
                 });
 
                 console.log(

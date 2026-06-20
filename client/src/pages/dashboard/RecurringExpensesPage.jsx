@@ -258,7 +258,7 @@ function RecurringExpensesPage() {
                                             </p>
                                             
                                             <p className="text-sm mt-1 mb-4 text-slate-600 dark:text-slate-400">
-                                                Due: {new Date(expense.nextDueDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                                📅 Due: {new Date(expense.nextDueDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
                                             </p>
                                             
                                             <button
