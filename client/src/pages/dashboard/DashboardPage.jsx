@@ -33,6 +33,9 @@ import {
   Bar,
   XAxis,
   YAxis,
+  LineChart,
+  Line,
+  CartesianGrid,
 } from "recharts";
 
 const COLORS = [
@@ -46,14 +49,14 @@ const COLORS = [
 
 function DashboardPage() {
   const user = JSON.parse(localStorage.getItem("user"));
-  
+
   const currencySymbols = {
     INR: "₹",
     USD: "$",
     EUR: "€",
     GBP: "£",
   };
-  
+
   const currency = currencySymbols[user?.currency] || "₹";
 
   const [expenses, setExpenses] = useState([]);
@@ -93,12 +96,12 @@ function DashboardPage() {
       ? (totalAmount / expenses.length).toFixed(2)
       : 0;
 
-  const highestExpense =
+  const highestExpenseAmount =
     expenses.length > 0
       ? Math.max(...expenses.map((expense) => expense.amount))
       : 0;
 
-  const lowestExpense =
+  const lowestExpenseAmount =
     expenses.length > 0
       ? Math.min(...expenses.map((expense) => expense.amount))
       : 0;
@@ -106,6 +109,24 @@ function DashboardPage() {
   const monthlySpending = totalAmount;
 
   const dailyAverage = (totalAmount / 30).toFixed(2);
+
+  const today = new Date();
+  const currentDay = today.getDate();
+  const daysInMonth = new Date(
+    today.getFullYear(),
+    today.getMonth() + 1,
+    0
+  ).getDate();
+
+  const predictedSpending =
+    currentDay > 0
+      ? (totalAmount / currentDay) * daysInMonth
+      : totalAmount;
+
+  const predictionStatus =
+    predictedSpending > (budget?.amount || 0)
+      ? "⚠ Budget may be exceeded"
+      : "🟢 Budget is on track";
 
   const budgetStatus =
     budgetPercentage >= 100
@@ -125,20 +146,43 @@ function DashboardPage() {
       .reduce((total, expense) => total + expense.amount, 0),
   }));
 
+  const rankedCategories = [...categoryData].sort(
+    (a, b) => b.value - a.value
+  );
+
+  const getRankIcon = (index) => {
+    if (index === 0) return "🥇";
+    if (index === 1) return "🥈";
+    if (index === 2) return "🥉";
+    return `${index + 1}️⃣`;
+  };
+
   const highestCategory =
-    categories.length > 0
-      ? categories.reduce((best, current) => {
-        const bestTotal = expenses
-          .filter((expense) => expense.category === best)
-          .reduce((sum, expense) => sum + expense.amount, 0);
+    rankedCategories.length > 0
+      ? rankedCategories[0]
+      : null;
 
-        const currentTotal = expenses
-          .filter((expense) => expense.category === current)
-          .reduce((sum, expense) => sum + expense.amount, 0);
+  const lowestCategory =
+    rankedCategories.length > 0
+      ? rankedCategories[
+          rankedCategories.length - 1
+        ]
+      : null;
 
-        return currentTotal > bestTotal ? current : best;
-      })
-      : "N/A";
+  let financialHealth =
+    "Excellent";
+
+  if (budgetPercentage > 50) {
+    financialHealth = "Good";
+  }
+
+  if (budgetPercentage > 75) {
+    financialHealth = "Warning";
+  }
+
+  if (budgetPercentage > 90) {
+    financialHealth = "Critical";
+  }
 
   const averageTransaction =
     expenses.length > 0
@@ -147,6 +191,109 @@ function DashboardPage() {
 
   const recommendation =
     budgetPercentage >= 80 ? "Reduce Spending" : "Keep Saving";
+
+  const savingsScore = Math.max(
+    0,
+    Math.min(
+      100,
+      Math.round(100 - budgetPercentage)
+    )
+  );
+  
+  let savingsLabel = "Excellent";
+  
+  if (savingsScore < 80) {
+    savingsLabel = "Good";
+  }
+  
+  if (savingsScore < 60) {
+    savingsLabel = "Needs Improvement";
+  }
+  
+  if (savingsScore < 40) {
+    savingsLabel = "Critical";
+  }
+  
+  let scoreColor = "text-green-500";
+  
+  if (savingsScore < 80) {
+    scoreColor = "text-yellow-500";
+  }
+  
+  if (savingsScore < 60) {
+    scoreColor = "text-orange-500";
+  }
+  
+  if (savingsScore < 40) {
+    scoreColor = "text-red-500";
+  }
+
+  const topCategory = highestCategory?.name || null;
+  const insights = [];
+
+  if (budgetPercentage < 50) {
+    insights.push({
+      icon: "🟢",
+      text: "Budget usage is healthy."
+    });
+  }
+
+  if (
+    budgetPercentage >= 50 &&
+    budgetPercentage < 80
+  ) {
+    insights.push({
+      icon: "🟡",
+      text: "You've used over half of your budget."
+    });
+  }
+
+  if (budgetPercentage >= 80) {
+    insights.push({
+      icon: "🔴",
+      text: "Budget usage exceeds 80%."
+    });
+  }
+
+  if (topCategory) {
+    insights.push({
+      icon: "⚠",
+      text: `${topCategory} is your highest spending category.`
+    });
+  }
+
+  if (averageExpense > 0) {
+    insights.push({
+      icon: "📈",
+      text: `Average transaction: ${currency}${Number(averageExpense).toFixed(0)}`
+    });
+  }
+
+  const monthlyData = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ].map((month, index) => ({
+    month,
+    amount: expenses
+      .filter(
+        (expense) =>
+          new Date(expense.date).getMonth() === index
+      )
+      .reduce(
+        (sum, expense) => sum + expense.amount,
+        0
+      ),
+  }));
 
   const handleDeleteExpense = async (id) => {
     try {
@@ -245,8 +392,8 @@ function DashboardPage() {
     doc.text(`Remaining: ${currency} ${convertCurrency(remainingBudget, user?.currency)}`, 20, 90);
 
     doc.text(`Average Expense: ${currency} ${convertCurrency(averageExpense, user?.currency)}`, 20, 100);
-    doc.text(`Highest Expense: ${currency} ${convertCurrency(highestExpense, user?.currency)}`, 20, 110);
-    doc.text(`Lowest Expense: ${currency} ${convertCurrency(lowestExpense, user?.currency)}`, 20, 120);
+    doc.text(`Highest Expense: ${currency} ${convertCurrency(highestExpenseAmount, user?.currency)}`, 20, 110);
+    doc.text(`Lowest Expense: ${currency} ${convertCurrency(lowestExpenseAmount, user?.currency)}`, 20, 120);
 
     doc.text(`Budget Status: ${budgetStatus}`, 20, 130);
 
@@ -281,8 +428,8 @@ function DashboardPage() {
       { Metric: "Budget", Value: budget?.amount || 0 },
       { Metric: "Remaining Budget", Value: remainingBudget },
       { Metric: "Average Expense", Value: averageExpense },
-      { Metric: "Highest Expense", Value: highestExpense },
-      { Metric: "Lowest Expense", Value: lowestExpense },
+      { Metric: "Highest Expense", Value: highestExpenseAmount },
+      { Metric: "Lowest Expense", Value: lowestExpenseAmount },
       { Metric: "Budget Used %", Value: budgetPercentage.toFixed(0) },
       { Metric: "Budget Status", Value: budgetStatus },
     ];
@@ -505,7 +652,7 @@ function DashboardPage() {
                   Highest Expense
                 </p>
                 <h2 className="text-3xl font-bold mt-2 text-red-500">
-                  {currency} {convertCurrency(highestExpense, user?.currency)}
+                  {currency} {convertCurrency(highestExpenseAmount, user?.currency)}
                 </h2>
               </div>
 
@@ -522,7 +669,7 @@ function DashboardPage() {
                   Lowest Expense
                 </p>
                 <h2 className="text-3xl font-bold mt-2 text-emerald-600">
-                  {currency} {convertCurrency(lowestExpense, user?.currency)}
+                  {currency} {convertCurrency(lowestExpenseAmount, user?.currency)}
                 </h2>
               </div>
             </div>
@@ -590,14 +737,14 @@ function DashboardPage() {
                 Financial Insights
               </h2>
 
-              <div className="grid md:grid-cols-3 gap-4">
+              <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <p className="text-slate-500 dark:text-slate-300">
                     Top Category
                   </p>
 
                   <h3 className="text-2xl font-bold mt-2">
-                    {highestCategory}
+                    {highestCategory?.name || "N/A"}
                   </h3>
                 </div>
 
@@ -610,16 +757,39 @@ function DashboardPage() {
                     {currency} {convertCurrency(averageTransaction, user?.currency)}
                   </h3>
                 </div>
+              </div>
 
-                <div>
-                  <p className="text-slate-500 dark:text-slate-300">
-                    Recommendation
-                  </p>
-
-                  <h3 className="text-xl font-bold mt-2 text-indigo-600">
-                    {recommendation}
-                  </h3>
-                </div>
+              <div
+                className="
+                  mt-6
+                  space-y-3
+                  max-w-md
+                "
+              >
+                {insights.map((insight, index) => (
+                  <div
+                    key={index}
+                    className="
+                      flex
+                      items-center
+                      gap-3
+                      p-4
+                      rounded-2xl
+                      bg-slate-100
+                      dark:bg-slate-700
+                      hover:scale-[1.02]
+                      transition-all
+                      duration-200
+                    "
+                  >
+                    <span className="text-xl">
+                      {insight.icon}
+                    </span>
+                    <span>
+                      {insight.text}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -713,6 +883,54 @@ function DashboardPage() {
               </div>
             </div>
 
+            <div
+              className="
+                rounded-3xl
+                shadow-lg
+                p-6
+                mb-6
+                bg-white text-slate-900
+                dark:bg-slate-800 dark:text-white
+              "
+            >
+              <h2 className="text-2xl font-bold mb-6">
+                Monthly Expense Trend
+              </h2>
+
+              <div
+                style={{
+                  width: "100%",
+                  height: 350,
+                }}
+              >
+                <ResponsiveContainer>
+                  <LineChart data={monthlyData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+
+                    <XAxis dataKey="month" />
+
+                    <YAxis />
+
+                    <Tooltip
+                      formatter={(value) =>
+                        `${currency} ${convertCurrency(
+                          value,
+                          user?.currency
+                        )}`
+                      }
+                    />
+
+                    <Line
+                      type="monotone"
+                      dataKey="amount"
+                      stroke="#2563eb"
+                      strokeWidth={3}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
             {/* Analytics Summary Card */}
             <div
               className="
@@ -756,6 +974,208 @@ function DashboardPage() {
                     {budgetPercentage.toFixed(0)}%
                   </h3>
                 </div>
+              </div>
+            </div>
+
+            {/* Budget Prediction */}
+            <div
+              className="
+                rounded-3xl
+                shadow-lg
+                p-6
+                mb-6
+                bg-white text-slate-900
+                dark:bg-slate-800 dark:text-white
+              "
+            >
+              <h2 className="text-2xl font-bold mb-4">
+                Budget Prediction
+              </h2>
+
+              <div className="space-y-3">
+                <p>
+                  Current Spending:
+                  <span className="font-bold ml-2">
+                    {currency} {convertCurrency(totalAmount, user?.currency)}
+                  </span>
+                </p>
+
+                <p>
+                  Predicted Month End:
+                  <span className="font-bold ml-2">
+                    {currency} {convertCurrency(predictedSpending, user?.currency)}
+                  </span>
+                </p>
+
+                <div
+                  className="
+                    mt-4
+                    p-3
+                    rounded-xl
+                    bg-slate-100
+                    dark:bg-slate-700
+                  "
+                >
+                  {predictionStatus}
+                </div>
+              </div>
+            </div>
+
+            {/* Savings Score */}
+            <div
+              className="
+                rounded-3xl
+                shadow-lg
+                p-6
+                mb-6
+                bg-white text-slate-900
+                dark:bg-slate-800 dark:text-white
+              "
+            >
+              <h2 className="text-2xl font-bold mb-4">
+                Savings Score
+              </h2>
+
+              <div className="text-center">
+
+                <div
+                  className={`
+                    text-6xl
+                    font-bold
+                    ${scoreColor}
+                  `}
+                >
+                  {savingsScore}
+                </div>
+
+                <div className="text-lg mt-2">
+                  /100
+                </div>
+
+                <div
+                  className={`
+                    mt-4
+                    font-semibold
+                    ${scoreColor}
+                  `}
+                >
+                  {savingsLabel}
+                </div>
+
+              </div>
+            </div>
+
+            {/* Analytics Highlights */}
+            <div
+              className="
+                rounded-3xl
+                shadow-lg
+                p-6
+                bg-white text-slate-900
+                dark:bg-slate-800 dark:text-white
+              "
+            >
+              <h2 className="text-2xl font-bold mb-4">
+                Analytics Highlights
+              </h2>
+
+              <div className="space-y-4">
+
+                <div
+                  className="
+                    p-3
+                    rounded-xl
+                    bg-slate-100
+                    dark:bg-slate-700
+                  "
+                >
+                  🏆 Highest Spending:
+                  <span className="font-semibold ml-2">
+                    {highestCategory?.name || "N/A"}
+                  </span>
+                </div>
+
+                <div
+                  className="
+                    p-3
+                    rounded-xl
+                    bg-slate-100
+                    dark:bg-slate-700
+                  "
+                >
+                  💎 Lowest Spending:
+                  <span className="font-semibold ml-2">
+                    {lowestCategory?.name || "N/A"}
+                  </span>
+                </div>
+
+                <div
+                  className="
+                    p-3
+                    rounded-xl
+                    bg-slate-100
+                    dark:bg-slate-700
+                  "
+                >
+                  📊 Financial Health:
+                  <span className="font-semibold ml-2">
+                    {financialHealth}
+                  </span>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Category Ranking */}
+            <div
+              className="
+                rounded-3xl
+                shadow-lg
+                p-6
+                mb-6
+                mt-6
+                bg-white text-slate-900
+                dark:bg-slate-800 dark:text-white
+              "
+            >
+              <h2 className="text-2xl font-bold mb-4">
+                Category Ranking
+              </h2>
+
+              <div className="space-y-3">
+                {rankedCategories.map(
+                  (category, index) => (
+                    <div
+                      key={category.name}
+                      className="
+                        flex
+                        items-center
+                        justify-between
+                        p-3
+                        rounded-xl
+                        bg-slate-100
+                        dark:bg-slate-700
+                        hover:scale-[1.02]
+                        transition-all
+                        duration-200
+                      "
+                    >
+                      <div>
+                        {getRankIcon(index)}
+                        {" "}
+                        {category.name}
+                      </div>
+
+                      <div className="font-semibold">
+                        {currency}
+                        {convertCurrency(
+                          category.value,
+                          user?.currency
+                        )}
+                      </div>
+                    </div>
+                  )
+                )}
               </div>
             </div>
 
