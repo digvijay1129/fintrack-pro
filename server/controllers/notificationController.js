@@ -47,6 +47,7 @@ const markAsRead = async (req, res) => {
       },
       {
         isRead: true,
+        readAt: new Date(),
       },
       {
         new: true,
@@ -71,6 +72,7 @@ const markAllAsRead = async (req, res) => {
       },
       {
         isRead: true,
+        readAt: new Date(),
       }
     );
 

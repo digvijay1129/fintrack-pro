@@ -26,12 +26,14 @@ const userSchema = new mongoose.Schema(
       default: "INR",
     },
 
-    resetToken: {
+    role: {
       type: String,
+      enum: ["user", "admin"],
+      default: "user",
     },
 
-    resetTokenExpiry: {
-      type: Date,
+    resetToken: {
+      type: String,
     },
 
     resetTokenExpiry: {

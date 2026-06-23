@@ -41,6 +41,19 @@ require(
 "./jobs/dueTomorrowReminderJob"
 );
 
+const adminRoutes =
+require("./routes/adminRoutes");
+
+const notificationCleanupJob =
+require(
+"./jobs/notificationCleanupJob"
+);
+
+app.use(
+  "/api/admin",
+  adminRoutes
+);
+
 dueTomorrowReminderJob();
 
 app.use(
@@ -51,6 +64,7 @@ notificationRoutes
 const PORT = process.env.PORT || 5000;
 
 recurringExpenseJob();
+notificationCleanupJob();
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

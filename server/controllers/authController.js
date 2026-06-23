@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Notification = require("../models/Notification");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const generateToken = require("../utils/generateToken");
@@ -24,6 +25,13 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
+    await Notification.create({
+      title: "New User Registered",
+      message: `${name} joined FinTrack`,
+      type: "admin",
+      isRead: false,
+    });
+
     res.status(201).json({
       message: "User registered successfully",
       token: generateToken(user._id),
@@ -32,6 +40,7 @@ const registerUser = async (req, res) => {
         name: user.name,
         email: user.email,
         currency: user.currency,
+        role: user.role,
       },
     });
   } catch (error) {
@@ -74,6 +83,7 @@ const loginUser = async (req, res) => {
         name: user.name,
         email: user.email,
         currency: user.currency,
+        role: user.role,
       },
     });
   } catch (error) {

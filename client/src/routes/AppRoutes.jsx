@@ -13,6 +13,10 @@ import ReportsPage from "../pages/dashboard/ReportsPage";
 import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage";
 import ResetPasswordPage from "../pages/auth/ResetPasswordPage";
 import RecurringExpensesPage from "../pages/dashboard/RecurringExpensesPage";
+import AdminDashboard from "../pages/admin/AdminDashboard";
+import AdminRoute from "./AdminRoute";
+import AdminUsersPage
+  from "../pages/admin/AdminUsersPage";
 
 function AppRoutes() {
   return (
@@ -54,6 +58,28 @@ function AppRoutes() {
       <Route
         path="/reports"
         element={<ReportsPage />}
+      />
+
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/users"
+        element={
+          <ProtectedRoute>
+            <AdminRoute>
+              <AdminUsersPage />
+            </AdminRoute>
+          </ProtectedRoute>
+        }
       />
 
       <Route path="/login" element={<LoginPage />} />
