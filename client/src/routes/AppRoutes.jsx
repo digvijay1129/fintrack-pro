@@ -17,6 +17,12 @@ import AdminDashboard from "../pages/admin/AdminDashboard";
 import AdminRoute from "./AdminRoute";
 import AdminUsersPage
   from "../pages/admin/AdminUsersPage";
+import TeamsPage
+  from "../pages/team/TeamsPage";
+import TeamDetailsPage
+  from "../pages/team/TeamDetailsPage";
+import InvitationsPage
+  from "../pages/team/InvitationsPage";
 
 function AppRoutes() {
   return (
@@ -80,6 +86,29 @@ function AppRoutes() {
             </AdminRoute>
           </ProtectedRoute>
         }
+      />
+
+      <Route
+        path="/teams"
+        element={
+          <ProtectedRoute>
+            <TeamsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/teams/:id"
+        element={
+          <ProtectedRoute>
+            <TeamDetailsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/team-invitations"
+        element={<InvitationsPage />}
       />
 
       <Route path="/login" element={<LoginPage />} />

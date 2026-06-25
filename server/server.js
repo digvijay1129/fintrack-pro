@@ -49,6 +49,14 @@ require(
 "./jobs/notificationCleanupJob"
 );
 
+const teamRoutes =
+require("./routes/teamRoutes");
+
+app.use(
+  "/api/teams",
+  teamRoutes
+);
+
 app.use(
   "/api/admin",
   adminRoutes

@@ -35,6 +35,13 @@ const notificationSchema = new mongoose.Schema(
       type: String,
       default: "info",
     },
+    team: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+    },
+    inviterName: {
+      type: String,
+    },
   },
   {
     timestamps: true,

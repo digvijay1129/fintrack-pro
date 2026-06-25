@@ -14,6 +14,10 @@ import {
   deleteNotification,
   clearAllNotifications
 } from "../../services/notificationService";
+import {
+  acceptInvitation,
+  rejectInvitation,
+} from "../../services/teamService";
 import { formatTime } from "../../utils/formatTime";
 
 function Navbar() {
@@ -35,6 +39,9 @@ function Navbar() {
 
   const [showClearModal, setShowClearModal] = useState(false);
   const [clearAllLoading, setClearAllLoading] = useState(false);
+
+  const [processingInvitation, setProcessingInvitation] = useState(null);
+  const [invitationStatus, setInvitationStatus] = useState({});
 
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
@@ -131,6 +138,48 @@ function Navbar() {
       await fetchNotifications();
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleAccept = async (teamId, notificationId) => {
+    try {
+      setProcessingInvitation(notificationId);
+      await acceptInvitation(teamId);
+      
+      setInvitationStatus((prev) => ({
+        ...prev,
+        [notificationId]: "accepted",
+      }));
+
+      setTimeout(async () => {
+        await markAsRead(notificationId);
+        await fetchNotifications();
+      }, 1500);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setProcessingInvitation(null);
+    }
+  };
+
+  const handleReject = async (teamId, notificationId) => {
+    try {
+      setProcessingInvitation(notificationId);
+      await rejectInvitation(teamId);
+      
+      setInvitationStatus((prev) => ({
+        ...prev,
+        [notificationId]: "rejected",
+      }));
+
+      setTimeout(async () => {
+        await markAsRead(notificationId);
+        await fetchNotifications();
+      }, 1500);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setProcessingInvitation(null);
     }
   };
 
@@ -337,7 +386,6 @@ function Navbar() {
                 z-50
               "
             >
-              {/* UPDATED HEADER: STEP 1.1 */}
               <div className="flex items-center justify-between p-4 border-b dark:border-slate-700">
                 <h3 className="text-xl font-bold dark:text-white">
                   Notifications
@@ -403,15 +451,155 @@ function Navbar() {
                         dark:border-slate-700
                       "
                     >
-                      <p
-                        className={
-                          notification.isRead
-                            ? "dark:text-white"
-                            : "font-bold dark:text-white"
-                        }
-                      >
-                        {notification.message}
-                      </p>
+                      {notification.type === "team-invite" ? (
+                        <div
+                          className="
+                            bg-blue-50
+                            dark:bg-slate-800
+                            border
+                            border-blue-200
+                            dark:border-slate-700
+                            rounded-2xl
+                            p-4
+                          "
+                        >
+                          <h3
+                            className="
+                              text-lg
+                              font-bold
+                              text-blue-700
+                              dark:text-blue-400
+                              mb-3
+                            "
+                          >
+                            👥 Team Invitation
+                          </h3>
+                          <p
+                            className="
+                              text-slate-700
+                              dark:text-slate-300
+                              mb-2
+                            "
+                          >
+                            📁 <strong>Team:</strong>{" "}
+                            {notification.team?.name}
+                          </p>
+                          <p
+                            className="
+                              text-slate-700
+                              dark:text-slate-300
+                              mb-2
+                            "
+                          >
+                            👤 <strong>Invited By:</strong>{" "}
+                            {notification.inviterName}
+                          </p>
+                          <p
+                            className="
+                              text-xs
+                              text-slate-500
+                              mb-4
+                            "
+                          >
+                            🕒 {formatTime(notification.createdAt)}
+                          </p>
+                        </div>
+                      ) : (
+                        <p
+                          className={
+                            notification.isRead
+                              ? "dark:text-white"
+                              : "font-bold dark:text-white"
+                          }
+                        >
+                          {notification.message}
+                        </p>
+                      )}
+
+                      {notification.type === "team-invite" && notification.team && (
+                        invitationStatus[notification._id] === "accepted" ? (
+                          <div
+                            className="
+                              mt-4
+                              bg-green-100
+                              text-green-700
+                              font-semibold
+                              rounded-xl
+                              py-3
+                              text-center
+                            "
+                          >
+                            ✅ Invitation Accepted
+                          </div>
+                        ) : invitationStatus[notification._id] === "rejected" ? (
+                          <div
+                            className="
+                              mt-4
+                              bg-red-100
+                              text-red-700
+                              font-semibold
+                              rounded-xl
+                              py-3
+                              text-center
+                            "
+                          >
+                            ❌ Invitation Rejected
+                          </div>
+                        ) : (
+                          <div
+                            className="
+                              flex
+                              gap-3
+                              mt-4
+                            "
+                          >
+                            <button
+                              disabled={processingInvitation === notification._id}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAccept(
+                                  notification.team._id,
+                                  notification._id
+                                );
+                              }}
+                              className="
+                                flex-1
+                                bg-green-600
+                                hover:bg-green-700
+                                disabled:opacity-50
+                                text-white
+                                py-2
+                                rounded-xl
+                                transition-all
+                              "
+                            >
+                              🟢 Accept
+                            </button>
+                            <button
+                              disabled={processingInvitation === notification._id}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleReject(
+                                  notification.team._id,
+                                  notification._id
+                                );
+                              }}
+                              className="
+                                flex-1
+                                bg-red-600
+                                hover:bg-red-700
+                                disabled:opacity-50
+                                text-white
+                                py-2
+                                rounded-xl
+                                transition-all
+                              "
+                            >
+                              🔴 Reject
+                            </button>
+                          </div>
+                        )
+                      )}
 
                       <p
                         className="
@@ -443,7 +631,6 @@ function Navbar() {
                 )}
               </div>
               
-              {/* UPDATED FOOTER: STEP 1.2 */}
               <div
                 className="
                   p-4

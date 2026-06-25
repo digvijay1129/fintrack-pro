@@ -1,0 +1,133 @@
+🚀 Day 23 — Shared Expenses (Splitwise Core)
+
+Instead of only "Equal Split", we'll build the complete shared expense engine:
+
+✅ Create Shared Expense
+✅ Equal Split
+✅ Percentage Split
+✅ Custom Split
+✅ Expense History
+✅ Team Expense Feed
+✅ Expense Details
+✅ Edit/Delete Shared Expense
+
+This is the foundation for all settlements.
+
+🚀 Day 24 — Settlement Engine
+
+This combines your "Settlement Calculation" and "Who Owes Whom":
+
+✅ Settlement Calculation
+✅ Team Balances
+✅ Who Owes Whom
+✅ Net Balance
+✅ Debt Graph
+✅ Settlement Suggestions
+✅ Pending Settlements
+
+Like Splitwise.
+
+🚀 Day 25 — Team Experience
+
+This is where we'll improve navigation and polish:
+
+✅ Sidebar Teams
+✅ Dashboard Team Widget
+✅ Team Search
+✅ Team Filters
+✅ Quick Navigation
+✅ Better Team UI
+✅ Better Member Cards
+✅ Better Timeline
+✅ Mobile-friendly Team Pages
+🚀 Day 26 — Approval Workflow
+
+Exactly as your roadmap:
+
+Pending
+Approved
+Rejected
+Admin Approval
+Company Workflow
+🥉 Phase 3
+Day 27
+
+Reports
+
+Daily
+Weekly
+Monthly
+Yearly
+PDF
+CSV
+Day 28
+
+AI Insights
+
+Spending Increased
+Savings Improved
+Budget Risk
+Monthly Comparison
+Day 29
+
+Responsive UI
+
+Mobile Sidebar
+Mobile Dashboard
+Mobile Charts
+Mobile Notifications
+Mobile Team Pages
+Day 30
+
+Optimization
+
+React Memo
+Lazy Loading
+Pagination
+MongoDB Indexes
+API Optimization
+🏅 Phase 4
+Day 31
+
+Savings Goals
+
+Day 32
+
+Financial Calendar
+
+Day 33
+
+OCR Receipt Scanner
+
+Day 34
+
+AI Finance Assistant
+
+🏆 Phase 5
+Day 35
+
+Deployment
+
+Frontend (Vercel)
+Backend (Render)
+MongoDB Atlas
+Cloudinary
+Day 36
+
+Testing
+
+Frontend
+Backend
+API
+Security
+Performance
+Day 37
+
+Portfolio Polish
+
+README
+Screenshots
+GIF Demo
+Architecture Diagram
+API Docs
+Resume Content
