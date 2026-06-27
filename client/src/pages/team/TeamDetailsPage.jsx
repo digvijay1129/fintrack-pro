@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { getTeamById, removeMember } from "../../services/teamService";
 import TeamSettingsModal from "../../components/team/TeamSettingsModal";
 
 function TeamDetailsPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [team, setTeam] = useState(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -78,12 +79,22 @@ function TeamDetailsPage() {
             </div>
           </div>
         </div>
-        <button 
-          onClick={() => setSettingsOpen(true)}
-          className="bg-white text-blue-700 px-6 py-3 rounded-xl font-semibold shadow hover:scale-105 transition-all"
-        >
-          ⚙ Team Settings
-        </button>
+        
+        {/* Header Action Buttons */}
+        <div className="flex gap-4">
+          <button
+            onClick={() => navigate(`/teams/${team._id}/expenses`)}
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl transition-all font-semibold shadow hover:scale-105"
+          >
+            💰 Expenses
+          </button>
+          <button 
+            onClick={() => setSettingsOpen(true)}
+            className="bg-white text-blue-700 px-6 py-3 rounded-xl font-semibold shadow hover:scale-105 transition-all"
+          >
+            ⚙ Team Settings
+          </button>
+        </div>
       </div>
 
       {/* Statistics */}

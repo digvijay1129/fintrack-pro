@@ -37,20 +37,28 @@ const notificationRoutes =
   );
 
 const dueTomorrowReminderJob =
-require(
-"./jobs/dueTomorrowReminderJob"
-);
+  require(
+    "./jobs/dueTomorrowReminderJob"
+  );
 
 const adminRoutes =
-require("./routes/adminRoutes");
+  require("./routes/adminRoutes");
 
 const notificationCleanupJob =
-require(
-"./jobs/notificationCleanupJob"
-);
+  require(
+    "./jobs/notificationCleanupJob"
+  );
 
 const teamRoutes =
-require("./routes/teamRoutes");
+  require("./routes/teamRoutes");
+
+const splitExpenseRoutes =
+  require("./routes/splitExpenseRoutes");
+
+app.use(
+  "/api/split-expenses",
+  splitExpenseRoutes
+);
 
 app.use(
   "/api/teams",
@@ -65,8 +73,8 @@ app.use(
 dueTomorrowReminderJob();
 
 app.use(
-"/api/notifications",
-notificationRoutes
+  "/api/notifications",
+  notificationRoutes
 );
 
 const PORT = process.env.PORT || 5000;

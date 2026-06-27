@@ -23,6 +23,8 @@ import TeamDetailsPage
   from "../pages/team/TeamDetailsPage";
 import InvitationsPage
   from "../pages/team/InvitationsPage";
+import TeamExpensesPage
+  from "../pages/team/TeamExpensesPage";
 
 function AppRoutes() {
   return (
@@ -109,6 +111,15 @@ function AppRoutes() {
       <Route
         path="/team-invitations"
         element={<InvitationsPage />}
+      />
+
+      <Route
+        path="/teams/:id/expenses"
+        element={
+          <ProtectedRoute>
+            <TeamExpensesPage />
+          </ProtectedRoute>
+        }
       />
 
       <Route path="/login" element={<LoginPage />} />
